@@ -29,7 +29,9 @@ Create a local Kubernetes development environment on Windows and WSL2, including
     chmod 700 get_helm.sh && \
     ./get_helm.sh
     ```
+
 ---
+
 ## Create a Kubernetes Cluster (WSL2)
 
 ```bash
@@ -161,6 +163,8 @@ Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/mas
     ![minikube-tunnel](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-tunnel.png)
 1. **Windows**: Open your browser in a new Incognito/Private window and navigate to http://baby.kubemaster.me/ (port 80) you should see a cute baby cat
 
+    ![results-baby-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-baby-cat.png)
+
 **IMPORTANT**: The rest of this tutorial assumes that `minikube tunnel` is running in the background in a separated terminal.
 
 ---
@@ -236,6 +240,8 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     ```
 1. **Windows**: Check connectivity to the deployed `green` app, open browser and navigate to https://green.kubemaster.me (port 443) you should see a cat in a green scenery
 
+    ![results-baby-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-green-cat.png)
+
 ---
 
 ## Authentication - OAuth2
@@ -300,6 +306,8 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
     ```
 1. **Windows**: Open a browser in a new Incognito/Private window and navigate to https://dark.kubemaster.me and login with your Google user. You should see a cat in a dark scenery.
 
+    ![results-dark-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-dark-cat.png)
+
 ---
 
 ## Authentication - OIDC
@@ -328,6 +336,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 1. **Windows**: Open a browser in a new Incognito/Private window and navigate to https://darker.kubemaster.me and login with your Google user. You should see the same dark cat in the green scenery.
     - **NOTE**: If you have an existing browser windwow, even if it's incognito, then you might be already autehnticated. You can verify it by checking if the cookies `_oauth2_proxy` exists. On the backend, the authentication was done with OIDC, to get the full flow, close all incognito windows and then open a new browser windows in incognito https://darker.kubemaster.me , this time you'll see for a split second that the authentication is done with `oidc.kubemaster.me`
 
+    ![results-darker-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-darker-cat.png)
 
 ---
 

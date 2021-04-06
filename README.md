@@ -1,6 +1,6 @@
 # kubernetes-localdev
 
-Create a local Kubernetes development environment, including HTTPS/TLS and OAuth2/OIDC authentication.
+Create a local Kubernetes development environment on Windows and WSL2, including HTTPS/TLS and OAuth2/OIDC authentication.
 
 ## Requirements
 
@@ -91,18 +91,18 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
     ```
 1. **Windows**: Install the certificates `ca.crt` and `client.crt` for the **Current User** in the certificate store **Trusted Root Certification Authorities** (double click both files)
 
-    ![minikube-install-certs](./assets/minikube-install-certs.png)
+    ![minikube-install-certs](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-install-certs.png)
 
-    ![minikube-install-certs-store](./assets/minikube-install-certs-store.png)
+    ![minikube-install-certs-store](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-install-certs-store.png)
 1. **Windows**: Check access to the cluster's endpoint by opening the browser in `https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version`
 
 ## Configure LENS
 
 1. **Windows**: Use the KUBECONFIG file in LENS when adding a cluster (Windows)
-    ![lens-add-cluster](./assets/lens-add-cluster.png)
+    ![lens-add-cluster](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/lens-add-cluster.png)
 
     Select **All namespaces**
-    ![lens-view-pods](./assets/lens-view-pods.png)
+    ![lens-view-pods](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/lens-view-pods.png)
  
 ## NGINX Ingress Controller
 
@@ -134,7 +134,7 @@ The downside is that you have to add any subdomain the application uses, since w
 
 ## HTTP Application
 
-Deploy the [1-baby.yaml](./1-baby.yaml) app , a simple web application which serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
+Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app , a simple web application which serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
 1. **WSL2**: Deploy the application
     ```bash
@@ -148,7 +148,7 @@ Deploy the [1-baby.yaml](./1-baby.yaml) app , a simple web application which ser
     # 🏃  Starting tunnel for service nginx-ingress-nginx-controller    
     ```
 1. **Windows**: Check that minikube exposes NGINX Ingress Controller service on **127.0.0.1**
-    ![minikube-tunnel](./assets/minikube-tunnel.png)
+    ![minikube-tunnel](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-tunnel.png)
 1. **Windows**: Open your browser in a new Incognito/Private window and navigate to http://baby.kubemaster.me/ (port 80) you should see a cute baby cat
 
 **IMPORTANT**: The rest of this tutorial assumes that `minikube tunnel` is running in the background in a separated terminal.
@@ -173,7 +173,7 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
     1. Certificate - Current User > Trusted Root Certificate Authorities > Certificates > Issuted to and by is `mkcert $MACHINE_NAME ...`
     1. The end result should be as below
 
-    ![mkcert-certificate-installed](./assets/mkcert-certificate-installed.png)
+    ![mkcert-certificate-installed](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/mkcert-certificate-installed.png)
 
     **TIP**: Can't see it? Close and re-open `certmgr.msc`, it doesn't auto-refresh upon adding certificates
 
@@ -213,7 +213,7 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```
 1. **IMPORTANT**: Wait ~30 seconds for cert-manager to be ready before proceeding. The ClusterIssuer will fail to create if cert-manager is not ready, see the Troubleshooting section if you experience any issues
-1. **WSL2**: Create a ClusterIssuer, Certificate and deploy the [2-green.yaml](./2-green.yaml) application.
+1. **WSL2**: Create a ClusterIssuer, Certificate and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses
     kubectl apply -f cert-manager/clusterissuer.yaml && \
@@ -298,7 +298,7 @@ Image Source: https://developer.okta.com/blog/2018/11/26/spring-boot-2-dot-1-oid
 
 ### Deploy OAuth2-Proxy And Use OIDC
 
-The deployment steps are going to be exactly the same as before, though I do recommend viewing the files [4-oauth2-proxy-oidc.yaml](./4-oauth2-proxy-oidc.yaml) and [4-oauth2-proxy-oidc.yaml](./4-oauth2-proxy-oidc.yaml), while comparing them to [3-oauth2-proxy.yaml](./3-oauth2-proxy.yaml) and [3-dark.yaml](./3-dark.yaml).
+The deployment steps are going to be exactly the same as before, though I do recommend viewing the files [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml) and [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml), while comparing them to [3-oauth2-proxy.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-oauth2-proxy.yaml) and [3-dark.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-dark.yaml).
 
 The main difference is in the configuration of oauth2-proxy, where the provider is not using the default OAuth2 protocol for authentication, instead it's using the OIDC protocol.
 
@@ -343,7 +343,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 
 1. **Ingress**: Make sure you expose the cluster to the host with `minikube tunnel` before trying to access the application with the browser
     - ERR_CONNECTION_REFUSED
-        ![troubleshooting-err-connection-refused](./assets/troubleshooting-err-connection-refused.png)
+        ![troubleshooting-err-connection-refused](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-err-connection-refused.png)
 1. **Ingress**: Path based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.hml` is successful but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. Path based ingresses are mostly used for serving APIs, for example `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) host based ingresses for serving static pages, just like I did in this project.
 1. **Ingress**: version deprecation warning - ignore this warning, this is the latest version supported by the NGINX Ingress Controller
     ```bash
@@ -352,11 +352,11 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 1. **HTTPS**: Certificate is invalid in browser - Open your browser a new Incognito/Private window
     - ERR_CONNECTION_REFUSED
 
-        ![troubleshooting-err-connection-refused](./assets/troubleshooting-err-connection-refused.png)
+        ![troubleshooting-err-connection-refused](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-err-connection-refused.png)
 
     - ERR_CERT_AUTHORITY_INVALID
     
-        ![troubleshooting-connection-is-not-private](./assets/troubleshooting-connection-is-not-private.png)
+        ![troubleshooting-connection-is-not-private](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-connection-is-not-private.png)
 
 1. **cert-manager**: Errors applying cert-manager resources
 
@@ -377,6 +377,13 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
     ```
     error: unable to read client-key C:\Users\unfor19\.kube\certs\client.key for minikube due to open C:\Users\unfor19\.kube\certs\client.key: The system cannot find the file specified.
     ```
+
+## References
+
+- [How to Set Up an Nginx Ingress with Cert-Manager on DigitalOcean Kubernetes](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes)
+- [cert-manager docs](https://docs.cert-manager.io/en/release-0.10/index.html)
+- [minikube docker driver](https://minikube.sigs.k8s.io/docs/drivers/docker/)
+- [GitLab - Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/)
 
 ## Future Work
 

@@ -1,4 +1,4 @@
-# HTTP no Auth required
+# HTTPS auth with OIDC
 kind: Deployment
 apiVersion: apps/v1
 metadata:

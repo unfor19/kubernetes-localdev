@@ -1,0 +1,102 @@
+# Source: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/docs/examples/auth/oauth-external-auth/oauth2-proxy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: oauth2-proxy-oidc
+  name: oauth2-proxy-oidc
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: oauth2-proxy-oidc
+  template:
+    metadata:
+      labels:
+        k8s-app: oauth2-proxy-oidc
+    spec:
+      containers:
+        - args:
+            - --provider=oidc # Google in our case
+            - --scope=openid profile email
+            - --oidc-issuer-url=https://accounts.google.com
+            - --oidc-jwks-url=https://accounts.google.com/.well-known/openid-configuration             
+            - --email-domain=* #
+            - --http-address=0.0.0.0:4180 # accept from anywhere to port 4180
+            - --whitelist-domain=.kubemaster.me # any subdomain
+            - --request-logging=true # logging
+            - --show-debug-on-error=true # logging
+            - --cookie-secure=true # must have with https
+            - --cookie-domain=.kubemaster.me # authed to any subdomain
+            - --cookie-httponly=true # default
+            - --cookie-refresh=0 # irrelevant
+            # - --login-url=https://accounts.google.com/o/oauth2/v2/auth
+            # - --redeem-url=https://oauth2.googleapis.com/token
+            # - --upstream=http://localhost:4180 # IRRELEVANT - used only when there's 1 backend server
+            # - --redirect-url= IRRELEVANT - fetched from /oauth2/start?rd=https://$host$escaped_request_uri
+          env:
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: oauth2-proxy-cookie-secret
+                  key: oauth2_proxy_cookie_secret
+            - name: OAUTH2_PROXY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: google-credentials
+                  key: google_client_id
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: google-credentials
+                  key: google_client_secret
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
+          imagePullPolicy: IfNotPresent
+          name: oauth2-proxy-oidc
+          ports:
+            - containerPort: 4180
+              protocol: TCP
+          resources:
+            limits:
+              memory: 400Mi
+              cpu: "200m"
+            requests:
+              memory: 200Mi
+              cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: oauth2-proxy-oidc
+  name: oauth2-proxy-oidc
+  namespace: default
+spec:
+  ports:
+    - name: http
+      port: 4180
+      protocol: TCP
+      targetPort: 4180
+  selector:
+    k8s-app: oauth2-proxy-oidc
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: oauth2-proxy-oidc
+  namespace: default
+spec:
+  tls:
+    - hosts:
+        - oidc.kubemaster.me
+      secretName: kubemaster-me-app-tls-secret
+  rules:
+    - host: oidc.kubemaster.me
+      http:
+        paths:
+          - path: /oauth2
+            pathType: Prefix
+            backend:
+              serviceName: oauth2-proxy-oidc
+              servicePort: 4180

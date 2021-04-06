@@ -1,0 +1,13 @@
+# Certificate Issuer (CA)
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: tls-ca-issuer
+  namespace: cert-manager
+  # labels: ...
+  # annotations: ...
+spec:
+  ca:
+    secretName: kubemaster-me-ca-tls-secret
+---
+

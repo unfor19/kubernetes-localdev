@@ -1,0 +1,65 @@
+# HTTP no Auth required
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: baby
+  labels:
+    app: cats
+    type: baby
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cats
+      type: baby
+  template:
+    metadata:
+      labels:
+        app: cats
+        type: baby
+    spec:
+      containers:
+        - name: cats
+          image: unfor19/docker-cats:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 50m
+              memory: 128Mi
+          env:
+            - name: APP_NAME
+              value: baby
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: baby
+spec:
+  ports:
+    - name: http
+      targetPort: 8080
+      port: 80
+  selector:
+    app: cats
+    type: baby
+---
+apiVersion: networking.k8s.io/v1beta1 # NGINX Ingress Controller supports this version
+kind: Ingress
+metadata:
+  name: baby
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: baby.kubemaster.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: baby
+              servicePort: 80

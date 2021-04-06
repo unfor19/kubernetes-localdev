@@ -1,4 +1,4 @@
----
+# HTTP no Auth required
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -17,7 +17,6 @@ spec:
       labels:
         app: cats
         type: green
-        version: v0.0.1
     spec:
       containers:
         - name: cats
@@ -41,7 +40,6 @@ kind: Service
 metadata:
   name: green
 spec:
-  # type: LoadBalancer
   ports:
     - name: http
       targetPort: 8080
@@ -50,21 +48,22 @@ spec:
     app: cats
     type: green
 ---
-# Hostbased - nginx, Traefik 1.7 and Traefik 2.0+
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1beta1 # NGINX Ingress Controller supports this version
 kind: Ingress
 metadata:
-  name: cat
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/auth-url: "http://app.kubemaster.me/oauth2/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "http://app.kubemaster.me/oauth2/start?rd=$escaped_request_uri"
+  name: green
 spec:
+  tls:
+  - hosts:
+    - green.kubemaster.me
+    secretName: kubemaster-me-app-tls-secret
+  ingressClassName: nginx
   rules:
-    - host: app.kubemaster.me
+    - host: green.kubemaster.me
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
               serviceName: green
-              servicePort: http
+              servicePort: 80

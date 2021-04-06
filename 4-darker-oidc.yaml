@@ -21,7 +21,7 @@ spec:
       containers:
         - name: cats
           image: unfor19/docker-cats:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             requests:
               cpu: 25m

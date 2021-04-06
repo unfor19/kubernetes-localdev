@@ -1,5 +1,7 @@
 # kubernetes-localdev
 
+Create a local Kubernetes development environment, including HTTPS/TLS and OAuth2/OIDC authentication.
+
 ## Requirements
 
 1. **Windows**: Windows version [1903 with build 18362 and above](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-2---check-requirements-for-running-wsl-2), hit WINKEY+R and run `winver`
@@ -21,7 +23,7 @@
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
     sudo install minikube-linux-amd64 /usr/local/bin/minikube
    ```
-1. **WSL2**: Helm v3.x - the package manager for Kubernetes
+1. **WSL2**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
     ```bash
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && \
     chmod 700 get_helm.sh && \
@@ -42,7 +44,7 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
     ```bash
     MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
     export MINIKUBE_EXPOSED_PORT=${MINIKUBE_EXPOSED_PORT} && \
-    curl -L --cacert ~/.minikube/ca.crt  "https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
+    curl -L --cacert ~/.minikube/ca.crt  "https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version" ; echo # adds extra line
     ```
 
     A valid response
@@ -59,10 +61,13 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
         "platform": "linux/amd64"
     }
     ```
+
+## Enable secured HTTPS access from Windows to WSL2
+
 1. **WSL2**: Copy KUBECONFIG to Windows host, **change the HOST_USERNAME** to your Windows host user name, mine is `unfor19`
     ```bash
     # Set variable
-    HOST_USERNAME="unfor19"
+    HOST_USERNAME="unfor19" # <-- CHANGE THIS!
     ```
 
     ```bash
@@ -79,10 +84,10 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
     # Client certificate
     cp  ~/.minikube/profiles/minikube/client.crt /mnt/c/Users/unfor19/.kube/certs/client.crt && \
     cp  ~/.minikube/profiles/minikube/client.key /mnt/c/Users/unfor19/.kube/certs/client.key && \
-        # Certificate Authority (CA) certificate
-        cp  ~/.minikube/ca.crt /mnt/c/Users/unfor19/.kube/certs/ca.crt && \
-        # Prepare URL for Windows
-        echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version" 
+    # Certificate Authority (CA) certificate
+    cp  ~/.minikube/ca.crt /mnt/c/Users/unfor19/.kube/certs/ca.crt && \
+    # Prepare URL for Windows
+    echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version" 
     ```
 1. **Windows**: Install the certificates `ca.crt` and `client.crt` for the **Current User** in the certificate store **Trusted Root Certification Authorities** (double click both files)
 
@@ -90,35 +95,48 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
 
     ![minikube-install-certs-store](./assets/minikube-install-certs-store.png)
 1. **Windows**: Check access to the cluster's endpoint by opening the browser in `https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version`
-1. (Optional) **Windows**: Use the KUBECONFIG file in LENS when adding a cluster (Windows)
+
+## Configure LENS
+
+1. **Windows**: Use the KUBECONFIG file in LENS when adding a cluster (Windows)
     ![lens-add-cluster](./assets/lens-add-cluster.png)
 
     Select **All namespaces**
     ![lens-view-pods](./assets/lens-view-pods.png)
  
-### Install NGINX Ingress Controller with Helm (WSL2)
+## NGINX Ingress Controller
 
-- **WSL2**: 
+The main reasons why we deploy a [Kubernetes Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
+
+1. Load balancing traffic to services
+1. A single endpoint that is exposed to the Windows host and routes traffic to relevant services (apps)
+1. Integrated HTTPS TLS termination, when configured properly ;)
+
+An ingress controller is needed even if you're working with a single service that doesn't even need load balancing. You can't expose multiple endpoints (services) on the same port (e.g 80, 443). This is also a good practice for production environments where you hide your services in a private network and allow traffic only from a known external endpoint, such as a load balancer.
+
+- **WSL2**: Add the relevant Helm's repository and deploy the ingress controller
     ```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo update && \
-    helm upgrade --install nginx ingress-nginx/ingress-nginx --set controller.kind=DaemonSet
+    helm upgrade --install nginx ingress-nginx/ingress-nginx --set controller.kind=DaemonSet # `upgrade --install` makes it idempotent
     ```
 
 ## Support DNS resolution in Windows host
 
-To access the application from the Host machine (Windows) we need to map its domain name to `127.0.0.1`, which in turn will listen to ports 80 and 443 with NGINX Ingress Controller.
+To access the NGINX Ingress Controller from the Windows host machine, we need to map its domain name to `127.0.0.1` which in turn will listen to ports 80 and 443.
 
 - **Windows**: Edit `C:\Windows\System32\drivers\etc\hosts` with Notepad or [Notepad++](https://notepad-plus-plus.org/downloads/v7.9.5/) as Administrator and add
     ```bash
     127.0.0.1 baby.kubemaster.me green.kubemaster.me dark.kubemaster.me auth.kubemaster.me oidc.kubemaster.me darker.kubemaster.me
     ```
 
+The downside is that you have to add any subdomain the application uses, since wildcard domains such as `*.mydomain.com` are not allows in the `hosts` file. The silver lining is you won't add all the subdomains that the application uses in production, since the main goal is to test/develop only the necessary endpoints.
+
 ## HTTP Application
 
-Deploy the `baby` app - a simple application served with NGINX Ingress via HTTP
+Deploy the [1-baby.yaml](./1-baby.yaml) app , a simple web application which serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
-1. **WSL2**: Deploy the example application
+1. **WSL2**: Deploy the application
     ```bash
     kubectl apply -f 1-baby.yaml
     ```
@@ -133,11 +151,15 @@ Deploy the `baby` app - a simple application served with NGINX Ingress via HTTP
     ![minikube-tunnel](./assets/minikube-tunnel.png)
 1. **Windows**: Open your browser in a new Incognito/Private window and navigate to http://baby.kubemaster.me/ (port 80) you should see a cute baby cat
 
-## HTTPS
+**IMPORTANT**: The rest of this tutorial assumes that `minikube tunnel` is running in the background in a separated terminal.
+
+## HTTPS Application
 
 Create a local Certificate Authority certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to `Trusted Root Certificate Authorities`. We'll use this certificate authority to create TLS certificates that will be used for local development.
 
-### Create Certificate Authority Certificate And Key
+### Create A Certificate Authority (CA) Certificate And Key
+
+We're going to use [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) for issueing HTTPS/TLS certificates. Before we can do that, we need to create a Certificate Authority (`rootCA.pem`) and a Certificate Authority Key (`rootCA-key.pem`). You can easily generate certificates with [mkcert](https://github.com/FiloSottile/mkcert). After you do that, verify the certificates were installed properly. To be clear, the certificates are automatically generated and installed, **there's no need** to search for `.crt` and install them.
 
 1. **Windows**: Open Windows PowerShell as Administrator (elevated)
     ```powershell
@@ -156,9 +178,13 @@ Create a local Certificate Authority certificate and key with [mkcert](https://g
     **TIP**: Can't see it? Close and re-open `certmgr.msc`, it doesn't auto-refresh upon adding certificates
 
 
-### Load Certificate To A Kubernetes Secret (WSL2)
+### Load Certificate To A Kubernetes Secret
 
-1. Mount the certificates that were created with `mkcert` from the Windows host to WSL
+So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last step to link them all is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets), which will be used by cert-manager to issue certificates.
+
+**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/` (Enable secured HTTPS access from Windows to WSL2) since I got some weird errors so I used `cp` as an alternative.
+
+1. **WSL2**: Mount the certificates that were created with `mkcert` from the Windows host to WSL
     ```bash
     # Set variable
     HOST_USERNAME="unfor19" # <-- CHANGE THIS!
@@ -169,7 +195,7 @@ Create a local Certificate Authority certificate and key with [mkcert](https://g
     sudo ln -s "/mnt/c/Users/${HOST_USERNAME}/AppData/Local/mkcert/" "$CAROOT_DIR" || \
     ls -l $CAROOT_DIR # Verify
     ```
-1. Create the [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) namespace and create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets)
+1. **WSL2**: Create the [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) namespace and create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets)
     ```
     kubectl create namespace cert-manager && \
     kubectl -n cert-manager create secret tls kubemaster-me-ca-tls-secret --key="${CAROOT_DIR}/rootCA-key.pem" --cert="${CAROOT_DIR}/rootCA.pem"
@@ -177,14 +203,17 @@ Create a local Certificate Authority certificate and key with [mkcert](https://g
 
 ### Install Cert-Manager And Issue A Certificate
 
-1. **WSL2**: Install cert manager
+Finally, we're going to deploy cert-manager with Helm and then create cert-manager's [custom resource definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), one of them is the [ClusterIssuer](https://docs.cert-manager.io/en/release-0.11/reference/clusterissuers.html). The ClusterIssuer is used by the [Certificate CRD](https://docs.cert-manager.io/en/release-0.11/reference/certificates.html) which in turn provides ability to terminate TLS connection in NGINX Ingress Controller.
+
+1. **WSL2**: Add cert-manager to the Helm's repo, create cert-manager's CRDs and deploy cert-manager.
     ```bash
     helm repo add jetstack https://charts.jetstack.io && \
     helm repo update                                  && \
     kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
     helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```
-1. **WSL2**: Create a ClusterIssuer, Certificate and deploy the `green` app. See the Troubleshooting if you experience any issues.
+1. **IMPORTANT**: Wait ~30 seconds for cert-manager to be ready before proceeding. The ClusterIssuer will fail to create if cert-manager is not ready, see the Troubleshooting section if you experience any issues
+1. **WSL2**: Create a ClusterIssuer, Certificate and deploy the [2-green.yaml](./2-green.yaml) application.
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses
     kubectl apply -f cert-manager/clusterissuer.yaml && \
@@ -197,7 +226,11 @@ Create a local Certificate Authority certificate and key with [mkcert](https://g
 
 ## Authentication - OAuth2
 
-We'll use [oauth2-proxy]() to proxy requests to Google's authentication service.
+We'll use [oauth2-proxy]() to proxy requests to Google's authentication service. Authenticated users are redirected to the initial URL that was requested ([https://\$host\$escaped_request_uri](https://kubernetes.github.io/ingress-nginx/examples/auth/oauth-external-auth/)).
+
+![oauth2-proxy-flow](https://cloud.githubusercontent.com/assets/45028/8027702/bd040b7a-0d6a-11e5-85b9-f8d953d04f39.png)
+Image Source: https://github.com/oauth2-proxy/oauth2-proxy
+
 
 ### Create Google's Credentials
 
@@ -259,7 +292,9 @@ In the previous step OAuth2 was used for authentication, though it's main purpos
 
 As demonstrated in the below image, OIDC **does not** replace OAuth2. OIDC is an external on top of OAuth2 which provides a better way to handle authentication.
 
-![oauth-oidc-layers](./assets/oauth-oidc-layers.png)
+![oauth-oidc-layers](https://d33wubrfki0l68.cloudfront.net/9ef5593f84648b223311c06be35560777b7dcf36/d16d7/assets-jekyll/blog/spring-boot-2.1/oauth2-and-oidc-a4379ecfcfd75f820b98f6a05951f33e33384532d89c410f9decf4ac7db2c5b8.png)
+
+Image Source: https://developer.okta.com/blog/2018/11/26/spring-boot-2-dot-1-oidc-oauth2-reactive-apis
 
 ### Deploy OAuth2-Proxy And Use OIDC
 
@@ -306,18 +341,25 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 
 ## Troubleshooting
 
-1. **Ingress**: ERR_CONNECTION_REFUSED
-    - Make sure you expose the cluster to the host with `minikube tunnel` before trying to access the application with the browser
-    ![troubleshooting-err-connection-refused](./assets/troubleshooting-err-connection-refused.png)
+1. **Ingress**: Make sure you expose the cluster to the host with `minikube tunnel` before trying to access the application with the browser
+    - ERR_CONNECTION_REFUSED
+        ![troubleshooting-err-connection-refused](./assets/troubleshooting-err-connection-refused.png)
 1. **Ingress**: Path based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.hml` is successful but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. Path based ingresses are mostly used for serving APIs, for example `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) host based ingresses for serving static pages, just like I did in this project.
 1. **Ingress**: version deprecation warning - ignore this warning, this is the latest version supported by the NGINX Ingress Controller
     ```bash
     Warning: networking.k8s.io/v1beta1 Ingress is deprecated in v1.19+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
     ```
 1. **HTTPS**: Certificate is invalid in browser - Open your browser a new Incognito/Private window
-    - ![troubleshooting-err-connection-refused](./assets/troubleshooting-err-connection-refused.png)
-    - ![troubleshooting-connection-is-not-private](./assets/troubleshooting-connection-is-not-private.png)
+    - ERR_CONNECTION_REFUSED
+
+        ![troubleshooting-err-connection-refused](./assets/troubleshooting-err-connection-refused.png)
+
+    - ERR_CERT_AUTHORITY_INVALID
+    
+        ![troubleshooting-connection-is-not-private](./assets/troubleshooting-connection-is-not-private.png)
+
 1. **cert-manager**: Errors applying cert-manager resources
+
     - Delete the secret `kubemaster-me-ca-tls-secret`, re-create it and then re-apply `cert-manager/clusterissuer.yaml`
         ```
         Error from server (NotFound): error when deleting "cert-manager/clusterissuer.yaml": clusterissuers.cert-manager.io "tls-ca-issuer" not found

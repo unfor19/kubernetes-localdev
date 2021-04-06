@@ -29,7 +29,7 @@ Create a local Kubernetes development environment on Windows and WSL2, including
     chmod 700 get_helm.sh && \
     ./get_helm.sh
     ```
-
+---
 ## Create a Kubernetes Cluster (WSL2)
 
 ```bash
@@ -61,6 +61,8 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
         "platform": "linux/amd64"
     }
     ```
+
+---
 
 ## Enable secured HTTPS access from Windows to WSL2
 
@@ -96,6 +98,8 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
     ![minikube-install-certs-store](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-install-certs-store.png)
 1. **Windows**: Check access to the cluster's endpoint by opening the browser in `https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version`
 
+---
+
 ## Configure LENS
 
 1. **Windows**: Use the KUBECONFIG file in LENS when adding a cluster (Windows)
@@ -104,6 +108,8 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
     Select **All namespaces**
     ![lens-view-pods](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/lens-view-pods.png)
  
+---
+
 ## NGINX Ingress Controller
 
 The main reasons why we deploy a [Kubernetes Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
@@ -121,6 +127,8 @@ An ingress controller is needed even if you're working with a single service tha
     helm upgrade --install nginx ingress-nginx/ingress-nginx --set controller.kind=DaemonSet # `upgrade --install` makes it idempotent
     ```
 
+---
+
 ## Support DNS resolution in Windows host
 
 To access the NGINX Ingress Controller from the Windows host machine, we need to map its domain name to `127.0.0.1` which in turn will listen to ports 80 and 443.
@@ -132,7 +140,9 @@ To access the NGINX Ingress Controller from the Windows host machine, we need to
 
 The downside is that you have to add any subdomain the application uses, since wildcard domains such as `*.mydomain.com` are not allows in the `hosts` file. The silver lining is you won't add all the subdomains that the application uses in production, since the main goal is to test/develop only the necessary endpoints.
 
-## HTTP Application
+---
+
+## HTTP
 
 Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app , a simple web application which serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
@@ -153,7 +163,9 @@ Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/mas
 
 **IMPORTANT**: The rest of this tutorial assumes that `minikube tunnel` is running in the background in a separated terminal.
 
-## HTTPS Application
+---
+
+## HTTPS
 
 Create a local Certificate Authority certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to `Trusted Root Certificate Authorities`. We'll use this certificate authority to create TLS certificates that will be used for local development.
 
@@ -178,7 +190,7 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
     **TIP**: Can't see it? Close and re-open `certmgr.msc`, it doesn't auto-refresh upon adding certificates
 
 
-### Load Certificate To A Kubernetes Secret
+### Load CA Certificates To A Kubernetes Secret
 
 So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last step to link them all is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets), which will be used by cert-manager to issue certificates.
 
@@ -223,6 +235,8 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     kubectl apply -f 2-green.yaml
     ```
 1. **Windows**: Check connectivity to the deployed `green` app, open browser and navigate to https://green.kubemaster.me (port 443) you should see a cat in a green scenery
+
+---
 
 ## Authentication - OAuth2
 
@@ -286,6 +300,8 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
     ```
 1. **Windows**: Open a browser in a new Incognito/Private window and navigate to https://dark.kubemaster.me and login with your Google user. You should see a cat in a dark scenery.
 
+---
+
 ## Authentication - OIDC
 
 In the previous step OAuth2 was used for authentication, though it's main purpose is for **authorization**. For **authentication** it is best to use [Open ID Connect (OIDC)](https://developers.google.com/identity/protocols/oauth2/openid-connect) whenever it's possible. The main benefit is that OIDC also provides the endpoint `/userinfo`, so the application can easily read a [JSON Web Token (JWT)](https://jwt.io/) and get the user details such as full name and email address.
@@ -313,12 +329,16 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
     - **NOTE**: If you have an existing browser windwow, even if it's incognito, then you might be already autehnticated. You can verify it by checking if the cookies `_oauth2_proxy` exists. On the backend, the authentication was done with OIDC, to get the full flow, close all incognito windows and then open a new browser windows in incognito https://darker.kubemaster.me , this time you'll see for a split second that the authentication is done with `oidc.kubemaster.me`
 
 
+---
+
 ## Authentication Summary
 
 - I find it best to have a dedicated subdomain for Authentication services, as it allows using cookies with `*.kubemaster.me` and acts as an isolated service from the entire application
 - It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
 - In case it's not clear - The *Authorised JavaScript origins* and *Authorised redirect URIs* that were declared in Google's Developer Console are used by oauth2-proxy, there's not a single time where Google tries to query your domains, this is why it's possible to make it work locally.
 - Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it and it helped me to understand the whole flow.
+
+---
 
 ## Cleanup
 
@@ -338,6 +358,8 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 - **Windows**: Remove **minikube**'s SSL certifictes, hit WINKEY+R and run `certmgr.msc`
     1. Certificates - Current User > Trusted Root Certification Authorities > Certificates
     1. Delete all minikube's certificates - **minikubeCA** and **minikube-user**
+
+---
 
 ## Troubleshooting
 
@@ -377,6 +399,8 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
     ```
     error: unable to read client-key C:\Users\unfor19\.kube\certs\client.key for minikube due to open C:\Users\unfor19\.kube\certs\client.key: The system cannot find the file specified.
     ```
+
+---
 
 ## References
 

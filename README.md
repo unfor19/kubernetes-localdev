@@ -418,6 +418,13 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 - [minikube docker driver](https://minikube.sigs.k8s.io/docs/drivers/docker/)
 - [GitLab - Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/)
 
+### Images
+
+- baby.jpg - source https://www.findcatnames.com/great-black-cat-names/ - [img](https://t9b8t3v6.rocketcdn.me/wp-content/uploads/2014/10/black-cat-and-moon.jpg)
+- green.jpg - source http://challengethestorm.org/cat-taught-love/ - [img](http://challengethestorm.org/wp-content/uploads/2017/03/cat-2083492_700x426.jpg)
+- dark.jpg - source https://www.maxpixel.net/Animals-Stone-Kitten-Cats-Cat-Flower-Pet-Flowers-2536662
+
+
 ## Future Work
 
 Sections that will be added to this project.

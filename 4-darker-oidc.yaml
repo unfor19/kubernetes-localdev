@@ -32,6 +32,8 @@ spec:
           env:
             - name: APP_NAME
               value: dark
+            - name: FROM_AUTHOR
+              value: darker
           ports:
             - containerPort: 8080
 ---
@@ -53,8 +55,9 @@ kind: Ingress
 metadata:
   name: darker
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: https://oidc.kubemaster.me/oauth2/auth
-    nginx.ingress.kubernetes.io/auth-signin: https://oidc.kubemaster.me/oauth2/start?rd=https://$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://auth.kubemaster.me/oauth2/auth
+    nginx.ingress.kubernetes.io/auth-signin: https://auth.kubemaster.me/oauth2/start?rd=https://$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, X-Auth-Request-User, X-Auth-Request-Email, X-Auth-Request-Preferred-Username, X-Auth-Request-Access-Token"        
 spec:
   tls:
   - hosts:

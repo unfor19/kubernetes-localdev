@@ -19,9 +19,8 @@ spec:
       containers:
         - args:
             - --provider=oidc # Google in our case
-            - --scope=openid profile email
+            - --scope="openid profile email"
             - --oidc-issuer-url=https://accounts.google.com
-            - --oidc-jwks-url=https://accounts.google.com/.well-known/openid-configuration             
             - --email-domain=* #
             - --http-address=0.0.0.0:4180 # accept from anywhere to port 4180
             - --whitelist-domain=.kubemaster.me # any subdomain
@@ -31,6 +30,11 @@ spec:
             - --cookie-domain=.kubemaster.me # authed to any subdomain
             - --cookie-httponly=true # default
             - --cookie-refresh=0 # irrelevant
+            - --set-authorization-header=true
+            - --set-xauthrequest=true
+            - --pass-authorization-header=true
+            - --pass-basic-auth=true
+            - --pass-access-token=true
             # - --login-url=https://accounts.google.com/o/oauth2/v2/auth
             # - --redeem-url=https://oauth2.googleapis.com/token
             # - --upstream=http://localhost:4180 # IRRELEVANT - used only when there's 1 backend server

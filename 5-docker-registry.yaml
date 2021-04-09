@@ -40,7 +40,7 @@ spec:
             #   value: "/certs/tls.key"
           ports:
             - containerPort: 80
-              hostPort: 80
+              # hostPort: 80
               protocol: TCP
           resources:
             limits:
@@ -58,7 +58,7 @@ metadata:
   name: docker-registry
   namespace: kube-system
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - name: http
       port: 80

@@ -13,6 +13,7 @@ spec:
     - "dark.kubemaster.me"
     - "darker.kubemaster.me"
     - "oidc.kubemaster.me"
+    # - "docker-registry.kubemaster.me"
     # - "*.kubermaster.me" # <-- simpler to use this one instead of the above subdomains
   issuerRef:
     name: tls-ca-issuer

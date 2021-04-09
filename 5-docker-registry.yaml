@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: docker-registry
+  name: docker-registry
+  namespace: kube-system
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: docker-registry
+  template:
+    metadata:
+      labels:
+        k8s-app: docker-registry
+    spec:
+      # volumes:
+      #   - name: mkcert-ca-certs
+      #     secret:
+      #       secretName: kubemaster-me-ca-tls-secret
+      containers:
+        - image: registry:2
+          imagePullPolicy: Always
+          name: docker-registry
+          # volumeMounts:
+          # - name: mkcert-ca-certs
+          #   mountPath: "/certs"
+          #   readOnly: true
+          env:
+            - name: REGISTRY_HTTP_SECRET
+              value: "some-secret"
+            - name: REGISTRY_HTTP_ADDR
+              value: "0.0.0.0:80"
+            # - name: REGISTRY_HTTP_TLS_CERTIFICATE
+            #   value: "/certs/tls.crt"
+            # - name: REGISTRY_HTTP_TLS_KEY
+            #   value: "/certs/tls.key"
+          ports:
+            - containerPort: 80
+              hostPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              memory: 400Mi
+              cpu: "200m"
+            requests:
+              memory: 200Mi
+              cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: docker-registry
+  name: docker-registry
+  namespace: kube-system
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    k8s-app: docker-registry
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: docker-registry
+  namespace: kube-system
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 2000m
+spec:
+  # tls:
+  #   - hosts:
+  #       - docker-registry.kubemaster.me
+  #     secretName: kubemaster-me-app-tls-secret
+  ingressClassName: nginx
+  rules:
+    - host: docker-registry.kubemaster.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: docker-registry
+              servicePort: 80

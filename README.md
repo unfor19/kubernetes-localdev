@@ -356,6 +356,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 
         <details>
 
+
         <summary>
         OIDC - ID token's payload - Expand/Collapse
         </summary>
@@ -366,7 +367,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
             */
             "iss": "https://accounts.google.com",
-            
+
             /*
             The client_id of the authorized presenter. This claim is only needed when the party requesting the ID token is not the same as the audience of the ID token. 
             This may be the case at Google for hybrid apps where a web application and Android app have a different OAuth 2.0 client_id but share the same Google APIs project.
@@ -377,7 +378,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             The audience that this ID token is intended for. It must be one of the OAuth 2.0 client IDs of your application.
             */
             "aud": "GOOGLE_CLIENT_ID", 
-            
+
             /*
             An identifier for the user, unique among all Google accounts and never reused.
             A Google account can have multiple email addresses at different points in time, but the sub value is never changed.
@@ -395,7 +396,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             True if the user's e-mail address has been verified; otherwise false.
             */
             "email_verified": true, 
-            
+
             /*
             Access token hash. Provides validation that the access token is tied to the identity token.
             If the ID token is issued with an access_token value in the server flow, this claim is always included.
@@ -407,7 +408,6 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             it is not necessary to verify the access token.
             */
             "at_hash": "someNiceOverHere",
-
 
             /*
             The user's full name, in a displayable form. Might be provided when:
@@ -424,8 +424,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             When picture claims are present, you can use them to update your app's user records. Note that this claim is never guaranteed to be present.
             */
             "picture": "https://lh3.googleusercontent.com/a-/AOh14Gg2SJeDqusILfvvSG0boxvXX65QYrx5U3KK38xj-A=s96-c",
-            
-            
+
             /*
             The user's given name(s) or first name(s). Might be provided when a name claim is present.
             */
@@ -440,7 +439,6 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             The user's locale, represented by a BCP 47 language tag. Might be provided when a name claim is present.
             */
             "locale": "en-GB",
-
 
             /*
             The time the ID token was issued. Represented in Unix time (integer seconds).
@@ -469,7 +467,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
             */
             "iss": "https://accounts.google.com",
-            
+
             /*
             The client_id of the authorized presenter. This claim is only needed when the party requesting the ID token is not the same as the audience of the ID token. 
             This may be the case at Google for hybrid apps where a web application and Android app have a different OAuth 2.0 client_id but share the same Google APIs project.
@@ -480,7 +478,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             The audience that this ID token is intended for. It must be one of the OAuth 2.0 client IDs of your application.
             */
             "aud": "GOOGLE_CLIENT_ID", 
-            
+
             /*
             An identifier for the user, unique among all Google accounts and never reused.
             A Google account can have multiple email addresses at different points in time, but the sub value is never changed.
@@ -488,13 +486,11 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             */
             "sub": "USER_ID", 
 
-
             /*
             The user's email address. This value may not be unique to this user and is not suitable for use as a primary key. 
             Provided only if your scope included the email scope value.
             */
             "email": "user@gmail.com",
-
 
             /*
             True if the user's e-mail address has been verified; otherwise false.
@@ -513,12 +509,10 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             */
             "at_hash": "someNiceOverHere",
 
-
             /*
             The time the ID token was issued. Represented in Unix time (integer seconds).
             */
             "iat": 1618059677,
-
 
             /*
             Expiration time on or after which the ID token must not be accepted. Represented in Unix time (integer seconds).

@@ -663,7 +663,7 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
         ```
         Error from server (InternalError): error when creating "cert-manager/clusterissuer.yaml": Internal error occurred: failed calling webhook "webhook.cert-manager.io": Post "https://cert-manager-webhook.cert-manager.svc:443/mutate?timeout=10s": dial tcp 10.102.252.218:443: connect: connection refused    
         ```
-1. **Authentication**: After login you get redirected to `/#` 404 after a successful login - Make sure the ingress annotation is `oauth2/start?rd=https://$host$escaped_request_uri`, for example
+1. **Authentication**: After after a successful login you get redirected to `/#` 404  - Make sure the ingress annotation is `oauth2/start?rd=https://$host$escaped_request_uri`, for example
     ```yaml
     nginx.ingress.kubernetes.io/auth-signin: https://auth.kubemaster.me/oauth2/start?rd=https://$host$escaped_request_uri
     ```

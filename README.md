@@ -362,7 +362,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
         </summary>
 
         ```json
-        {
+        }
             /*
             The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
             */

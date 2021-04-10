@@ -402,8 +402,8 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
         OIDC - ID token's payload - Expand/Collapse
         </summary>
 
-        ```json
-        }
+        ```javascript
+        {
             /*
             The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
             */
@@ -502,8 +502,8 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
         OAuth2 - ID token's payload - Expand/Collapse
         </summary>
 
-        ```json
-        }
+        ```javascript
+        {
             /*
             The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
             */

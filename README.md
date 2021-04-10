@@ -246,7 +246,7 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses
     kubectl apply -f cert-manager/clusterissuer.yaml && \
-    # Create a TLS Certificate for `kubemaster.me` and `*.kubemaster.me`
+    # Create a TLS Certificate for `kubemaster.me` and `*.kubemaster.me` (or specific sub-domains). This step is done once, there's no need to create more certificates since all of the sub-domains are covered in the same certficiate
     kubectl apply -f 2-certificate.yaml && \
      # Deploy sample app
     kubectl apply -f 2-green.yaml

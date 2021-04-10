@@ -1,7 +1,13 @@
 # kubernetes-localdev <!-- omit in toc -->
 
-Create a local Kubernetes development environment on Windows and WSL2, including HTTPS/TLS and OAuth2/OIDC authentication.
+Create a local Kubernetes development environment on Windows and WSL2. Throughout this tutorial you'll gain hands-on experience with:
 
+- Creating a local Kubernetes cluster with [minikube](https://minikube.sigs.k8s.io/docs/start/)
+- Deploying applicationg in Kubernetes using [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) and this project's YAML files
+- Serving an application securely with HTTPS with [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx/) (LoadBalancer) and [cert-manager](https://github.com/jetstack/cert-manager)
+- Managing Kubernetes resources as packages using [Helm v3](https://helm.sh/)
+- Authenticating users with Google as an Identity Provider (IdP), implementing both [OAuth2](https://oauth.net/2/) and [OAuth2+OIDC](https://openid.net/connect/) using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy)
+- Building the webserver application [docker-cats](https://github.com/unfor19/docker-cats) and deploying it to the Kubernetes cluster with [kubectl rollout](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources)
 
 <details>
 
@@ -34,7 +40,6 @@ Table Of Contents
 - [Cleanup](#cleanup)
 - [Troubleshooting](#troubleshooting)
 - [References](#references)
-  - [Images](#images)
 - [Future Work](#future-work)
 - [Authors](#authors)
 - [License](#license)
@@ -680,7 +685,7 @@ To deploy the application we'll use the built-in kubectl command [rollout restar
 - [minikube docker driver](https://minikube.sigs.k8s.io/docs/drivers/docker/)
 - [GitLab - Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/)
 
-### Images
+### Images <!-- omit in toc -->
 
 - baby.jpg - source https://www.findcatnames.com/great-black-cat-names/ - [img](https://t9b8t3v6.rocketcdn.me/wp-content/uploads/2014/10/black-cat-and-moon.jpg)
 - green.jpg - source http://challengethestorm.org/cat-taught-love/ - [img](http://challengethestorm.org/wp-content/uploads/2017/03/cat-2083492_700x426.jpg)

@@ -477,10 +477,8 @@ To deploy the application we'll use the built-in kubectl command [rollout restar
 
 Sections that will be added to this project.
 
-1. Local development (CI) of [docker-cats](https://github.com/unfor19/docker-cats)
-1. Local deployment (CD) of [docker-cats](https://github.com/unfor19/docker-cats)
 1. How to create and manage Kubernetes Secrets with [HashiCorp's Vault](https://www.vaultproject.io/)
-1. How to add how to add more nodes
+1. How to add more nodes
     ```bash
     minikube node add --worker=true
     ```

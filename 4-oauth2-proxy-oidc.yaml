@@ -52,7 +52,7 @@ spec:
                   name: google-credentials
                   key: google_client_secret
           image: quay.io/oauth2-proxy/oauth2-proxy:v7.1.0
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           name: oauth2-proxy-oidc
           ports:
             - containerPort: 4180

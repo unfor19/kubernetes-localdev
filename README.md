@@ -1,6 +1,45 @@
-# kubernetes-localdev
+# kubernetes-localdev <!-- omit in toc -->
 
 Create a local Kubernetes development environment on Windows and WSL2, including HTTPS/TLS and OAuth2/OIDC authentication.
+
+
+<details>
+
+<summary>
+Table Of Contents
+</summary>
+
+- [Requirements](#requirements)
+- [Create a Kubernetes Cluster](#create-a-kubernetes-cluster)
+  - [Configure Cluster Connection](#configure-cluster-connection)
+- [Enable secured HTTPS access from Windows to WSL2](#enable-secured-https-access-from-windows-to-wsl2)
+- [Configure LENS](#configure-lens)
+- [NGINX Ingress Controller](#nginx-ingress-controller)
+- [Support DNS resolution in Windows host](#support-dns-resolution-in-windows-host)
+- [HTTP](#http)
+- [HTTPS](#https)
+  - [Create A Certificate Authority (CA) Certificate And Key](#create-a-certificate-authority-ca-certificate-and-key)
+  - [Load CA Certificates To A Kubernetes Secret](#load-ca-certificates-to-a-kubernetes-secret)
+  - [Install Cert-Manager And Issue A Certificate](#install-cert-manager-and-issue-a-certificate)
+- [Authentication - OAuth2](#authentication---oauth2)
+  - [Create Google's Credentials](#create-googles-credentials)
+  - [Creating Kubernetes secrets For credentials](#creating-kubernetes-secrets-for-credentials)
+  - [Deploy OAuth2-Proxy And Protect An Application](#deploy-oauth2-proxy-and-protect-an-application)
+- [Authentication - OIDC](#authentication---oidc)
+  - [Deploy OAuth2-Proxy And Use OIDC](#deploy-oauth2-proxy-and-use-oidc)
+- [Authentication Summary](#authentication-summary)
+- [Local Development (CI) And Deployment (CD)](#local-development-ci-and-deployment-cd)
+  - [Build The Application (CI)](#build-the-application-ci)
+  - [Deploy The Application (CD)](#deploy-the-application-cd)
+- [Cleanup](#cleanup)
+- [Troubleshooting](#troubleshooting)
+- [References](#references)
+  - [Images](#images)
+- [Future Work](#future-work)
+- [Authors](#authors)
+- [License](#license)
+
+</details>
 
 ## Requirements
 
@@ -32,7 +71,7 @@ Create a local Kubernetes development environment on Windows and WSL2, including
 
 ---
 
-## Create a Kubernetes Cluster (WSL2)
+## Create a Kubernetes Cluster
 
 1. **WSL2**: Create a Kubernetes cluster with minkube
     ```bash

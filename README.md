@@ -1,5 +1,7 @@
 # kubernetes-localdev <!-- omit in toc -->
 
+![kubernetes-localdev-cover](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-cover.png)
+
 Create a local Kubernetes development environment on Windows and WSL2. Throughout this tutorial, you'll gain hands-on experience with:
 
 - Creating a local Kubernetes cluster with [minikube](https://minikube.sigs.k8s.io/docs/start/)
@@ -682,9 +684,20 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 
 ### Images <!-- omit in toc -->
 
+#### Cats Images <!-- omit in toc -->
+
 - baby.jpg - source https://www.findcatnames.com/great-black-cat-names/ - [img](https://t9b8t3v6.rocketcdn.me/wp-content/uploads/2014/10/black-cat-and-moon.jpg)
 - green.jpg - source http://challengethestorm.org/cat-taught-love/ - [img](http://challengethestorm.org/wp-content/uploads/2017/03/cat-2083492_700x426.jpg)
 - dark.jpg - source https://www.maxpixel.net/Animals-Stone-Kitten-Cats-Cat-Flower-Pet-Flowers-2536662
+
+#### Cover Photo Images <!-- omit in toc -->
+
+- HackerBoy Emoticon - http://123emoji.com/wp-content/uploads/2016/08/5609229801667168449.png
+- Helm - https://helm.sh/img/helm.svg
+- NGINX - https://www.nginx.com/wp-content/uploads/2018/08/NGINX-logo-rgb-large.png
+- Cert Manager - https://d33wubrfki0l68.cloudfront.net/f424659d40ec64748389d27b333510b3bd46f509/ed868/img/png/cert-manager-icon.png
+- Kubernetes - https://kubernetes.io/images/kubernetes-horizontal-color.png
+- OAuth2 Proxy - https://oauth2-proxy.github.io/oauth2-proxy/
 
 
 ## Future Work

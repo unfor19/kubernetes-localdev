@@ -30,9 +30,9 @@ spec:
             - --cookie-secure=true # must have with https
             - --cookie-domain=.kubemaster.me # authed to any subdomain
             - --cookie-httponly=true # default
-            - --cookie-refresh=0 # irrelevant
-            # - --login-url=https://accounts.google.com/o/oauth2/v2/auth
-            # - --redeem-url=https://oauth2.googleapis.com/token
+            - --cookie-refresh=0 # no expiration
+            - --set-authorization-header=true
+            - --pass-authorization-header=true
             # - --upstream=http://localhost:4180 # IRRELEVANT - used only when there's 1 backend server
             # - --redirect-url= IRRELEVANT - fetched from /oauth2/start?rd=https://$host$escaped_request_uri
           env:

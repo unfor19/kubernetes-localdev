@@ -34,6 +34,11 @@ spec:
               value: dark
             - name: FROM_AUTHOR              
               value: darker
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: google-credentials
+                  key: google_client_id        
           ports:
             - containerPort: 8080
 ---
@@ -57,6 +62,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: https://oidc.kubemaster.me/oauth2/auth
     nginx.ingress.kubernetes.io/auth-signin: https://oidc.kubemaster.me/oauth2/start?rd=https://$host$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, X-Auth-Request-User, X-Auth-Request-Email, X-Auth-Request-Preferred-Username, X-Auth-Request-Access-Token"
 spec:
   tls:
   - hosts:

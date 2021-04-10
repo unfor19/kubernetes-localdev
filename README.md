@@ -1,6 +1,6 @@
 # kubernetes-localdev <!-- omit in toc -->
 
-![kubernetes-localdev-cover](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-cover.png)
+![kubernetes-localdev-cover](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-cover.png?dummy=null)
 
 Create a local Kubernetes development environment on Windows and WSL2. Throughout this tutorial, you'll gain hands-on experience with:
 
@@ -698,6 +698,7 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 - Cert Manager - https://d33wubrfki0l68.cloudfront.net/f424659d40ec64748389d27b333510b3bd46f509/ed868/img/png/cert-manager-icon.png
 - Kubernetes - https://kubernetes.io/images/kubernetes-horizontal-color.png
 - OAuth2 Proxy - https://oauth2-proxy.github.io/oauth2-proxy/
+- minikube - https://minikube.sigs.k8s.io/docs/
 
 
 ## Future Work

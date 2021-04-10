@@ -96,6 +96,8 @@ Create a local Kubernetes development environment on Windows and WSL2, including
     ![minikube-install-certs-store](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-install-certs-store.png)
 1. **Windows**: Check access to the cluster's endpoint by opening the browser in `https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version`
 
+    ![access-minikube-kubernetes-api-from-windows](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/access-minikube-kubernetes-api-from-windows.png)
+
 ---
 
 ## Configure LENS
@@ -198,9 +200,9 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
 
 ### Load CA Certificates To A Kubernetes Secret
 
-So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last step to link them all is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets), which will be used by cert-manager to issue certificates.
+So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last is creating a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) that will be used by cert-manager to issue certificates.
 
-**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/` (Enable secured HTTPS access from Windows to WSL2) since I got some weird errors so I used `cp` as an alternative.
+**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/` since I got some weird errors so I used `cp` as an alternative.
 
 1. **WSL2**: Mount the certificates that were created with `mkcert` from the Windows host to WSL
     ```bash
@@ -293,8 +295,8 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 
     ```bash
     # Values from Google's Developer Console - the space at the beginning of the command is on purpose to keep it out from Bash's history
-    OAUTH2_PROXY_CLIENT_ID="google_oauth2_project_client_id"
-    OAUTH2_PROXY_CLIENT_SECRET="google_oauth2_project_client_secret"
+     OAUTH2_PROXY_CLIENT_ID="google_oauth2_project_client_id"
+     OAUTH2_PROXY_CLIENT_SECRET="google_oauth2_project_client_secret"
     ```
 
     ```bash
@@ -354,9 +356,9 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 ## Authentication Summary
 
 - I find it best to have a dedicated subdomain for Authentication services, as it allows using cookies with `*.kubemaster.me` and acts as an isolated service from the entire application
-- It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
 - In case it's not clear - The *Authorised JavaScript origins* and *Authorised redirect URIs* that were declared in Google's Developer Console are used by oauth2-proxy, there's not a single time where Google tries to query your domains, this is why it's possible to make it work locally.
 - Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it and it helped me to understand the whole flow.
+- It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET and Google Credentials (I think?)
 
 ---
 

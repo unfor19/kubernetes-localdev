@@ -34,11 +34,12 @@ Create a local Kubernetes development environment on Windows and WSL2, including
 
 ## Create a Kubernetes Cluster (WSL2)
 
-```bash
-minikube start --driver=docker --kubernetes-version=v1.20.2
-# ...
-# 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-```
+1. **WSL2**: Create a Kubernetes cluster with minkube
+    ```bash
+    minikube start --driver=docker --kubernetes-version=v1.20.2
+    # ...
+    # 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+    ```
 
 ### Configure Cluster Connection
 
@@ -77,19 +78,14 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
     ```bash
     # Copy KUBECONFIG and certs from WSL2 to host
     mkdir -p "/mnt/c/Users/${HOST_USERNAME}/.kube/certs" && \
-    cp -r "${HOME}/.kube/" "/mnt/c/Users/${HOST_USERNAME}" && \
-    rm -rf "/mnt/c/Users/${HOST_USERNAME}/.kube/cache" && \
+    cp "${HOME}/.kube/config" "/mnt/c/Users/${HOST_USERNAME}" && \
     # Change paths from `/home/$USER/*.minikube` with to `certs`
     sed 's~/home/'"${USER}"'.*.minikube~certs~g' "${HOME}/.kube/config" > "/mnt/c/Users/${HOST_USERNAME}/.kube/config"
     ```
 1. **WSL2**: Copy minikube's certificates to Windows host
     ```bash
-    # ALL Minikube
     # Client certificate
-    cp  ~/.minikube/profiles/minikube/client.crt /mnt/c/Users/unfor19/.kube/certs/client.crt && \
-    cp  ~/.minikube/profiles/minikube/client.key /mnt/c/Users/unfor19/.kube/certs/client.key && \
-    # Certificate Authority (CA) certificate
-    cp  ~/.minikube/ca.crt /mnt/c/Users/unfor19/.kube/certs/ca.crt && \
+    cp  "${HOME}/.minikube/profiles/minikube/client.crt" "${HOME}/.minikube/profiles/minikube/client.key" "${HOME}/.minikube/ca.crt" "/mnt/c/Users/${HOST_USERNAME}/.kube/certs/" && \
     # Prepare URL for Windows
     echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version" 
     ```
@@ -99,6 +95,8 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
 
     ![minikube-install-certs-store](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-install-certs-store.png)
 1. **Windows**: Check access to the cluster's endpoint by opening the browser in `https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version`
+
+    ![access-minikube-kubernetes-api-from-windows](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/access-minikube-kubernetes-api-from-windows.png)
 
 ---
 
@@ -126,7 +124,7 @@ An ingress controller is needed even if you're working with a single service tha
     ```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo update && \
-    helm upgrade --install nginx ingress-nginx/ingress-nginx --set controller.kind=DaemonSet # `upgrade --install` makes it idempotent
+    helm upgrade --install --wait nginx ingress-nginx/ingress-nginx --set controller.kind=DaemonSet # `upgrade --install` makes it idempotent
     ```
 
 ---
@@ -148,6 +146,12 @@ The downside is that you have to add any subdomain the application uses, since w
 
 Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app , a simple web application which serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
+
+1. **WSL**: Clone this repo
+    ```bash
+    git clone https://github.com/unfor19/kubernetes-localdev.git
+    cd kubernetes-localdev
+    ```
 1. **WSL2**: Deploy the application
     ```bash
     kubectl apply -f 1-baby.yaml
@@ -196,9 +200,9 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
 
 ### Load CA Certificates To A Kubernetes Secret
 
-So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last step to link them all is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets), which will be used by cert-manager to issue certificates.
+So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last is creating a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) that will be used by cert-manager to issue certificates.
 
-**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/` (Enable secured HTTPS access from Windows to WSL2) since I got some weird errors so I used `cp` as an alternative.
+**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/` since I got some weird errors so I used `cp` as an alternative.
 
 1. **WSL2**: Mount the certificates that were created with `mkcert` from the Windows host to WSL
     ```bash
@@ -207,12 +211,21 @@ So far the certificates are recognized by the Windows machine, now it's time to 
     ```
 
     ```bash
+    # Create symlink `ln -s`
     CAROOT_DIR="/mnt/media/caroot" && \
-    sudo ln -s "/mnt/c/Users/${HOST_USERNAME}/AppData/Local/mkcert/" "$CAROOT_DIR" || \
-    ls -l $CAROOT_DIR # Verify
+    sudo ln -s "/mnt/c/Users/${HOST_USERNAME}/AppData/Local/mkcert" "$CAROOT_DIR"
+    ```
+
+    ```bash
+    # Validate symlink
+    ls -l "$CAROOT_DIR" && ls "$CAROOT_DIR"
+
+    # Valid Output
+    # lrwxrwxrwx 1 root root 41 Apr 10 13:12 /mnt/media/caroot -> /mnt/c/Users/unfor19/AppData/Local/mkcert
+    # rootCA-key.pem  rootCA.pem
     ```
 1. **WSL2**: Create the [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) namespace and create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets)
-    ```
+    ```bash
     kubectl create namespace cert-manager && \
     kubectl -n cert-manager create secret tls kubemaster-me-ca-tls-secret --key="${CAROOT_DIR}/rootCA-key.pem" --cert="${CAROOT_DIR}/rootCA.pem"
     ```
@@ -223,12 +236,12 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
 
 1. **WSL2**: Add cert-manager to the Helm's repo, create cert-manager's CRDs and deploy cert-manager.
     ```bash
-    helm repo add jetstack https://charts.jetstack.io && \
-    helm repo update                                  && \
+    helm repo add jetstack https://charts.jetstack.io              && \
+    helm repo update                                               && \
     kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
-    helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
+    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```
-1. **IMPORTANT**: Wait ~30 seconds for cert-manager to be ready before proceeding. The ClusterIssuer will fail to create if cert-manager is not ready, see the Troubleshooting section if you experience any issues
+1. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready, see the Troubleshooting section if you experience any issues
 1. **WSL2**: Create a ClusterIssuer, Certificate and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses
@@ -282,8 +295,8 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 
     ```bash
     # Values from Google's Developer Console - the space at the beginning of the command is on purpose to keep it out from Bash's history
-    OAUTH2_PROXY_CLIENT_ID="google_oauth2_project_client_id"
-    OAUTH2_PROXY_CLIENT_SECRET="google_oauth2_project_client_secret"
+     OAUTH2_PROXY_CLIENT_ID="google_oauth2_project_client_id"
+     OAUTH2_PROXY_CLIENT_SECRET="google_oauth2_project_client_secret"
     ```
 
     ```bash
@@ -333,8 +346,186 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
     # Deploy sample app `darker`, served with HTTPS and protected with Google authentication (OIDC)
     kubectl apply -f 4-darker-oidc.yaml
     ```
-1. **Windows**: Open a browser in a new Incognito/Private window and navigate to https://darker.kubemaster.me and login with your Google user. You should see the same dark cat in the green scenery.
-    - **NOTE**: If you have an existing browser windwow, even if it's incognito, then you might be already autehnticated. You can verify it by checking if the cookies `_oauth2_proxy` exists. On the backend, the authentication was done with OIDC, to get the full flow, close all incognito windows and then open a new browser windows in incognito https://darker.kubemaster.me , this time you'll see for a split second that the authentication is done with `oidc.kubemaster.me`
+1. **Windows**: Open a browser in a new Incognito/Private window and navigate to https://darker.kubemaster.me and login with your Google user. You should see the same dark cat, but the message now contains your full name.
+    - **NOTE**: If you have an existing browser windwow, even if it's incognito, then you might have already autehnticated. You can verify it by checking if the cookie `_oauth2_proxy` exists. To get the full flow, close all incognito windows and then open a new browser windows in incognito https://darker.kubemaster.me
+    - **NOTE**: If you've already authenticated when you navigated to https://dark.kubemaster.me (OAuth2), then you won't be prompted to be logged in when you navigate to https://darker.kubemaster.me (OIDC). Authentication is done once and subsequent requests are verified by `oauth-proxy2` with the secret cookie `_oauth2_proxy` which is set to any subdomain `.kubemaster.me`. This goes the other way around, if you've already authenticated on https://darker.kubemaster.me then you can also access https://darker.kubemaster.me.
+    - **NOTE**: Authenticating with OIDC (darker) provides more details about the authenticated user, therefore it's possible to inject the name of the user in the application. If you logged in with OAuth2 (dark) then your name won't be displayed in the message "Hello YOUR_GOOGLE_NAME". Google specifies the available user attributes in the [ID token's payload](https://developers.google.com/identity/protocols/oauth2/openid-connect#an-id-tokens-payload). Click the Expand/Collapse buttons to view the available attributes for OIDC and OAuth2.
+
+
+        <details>
+
+        <summary>
+        OIDC - ID token's payload - Expand/Collapse
+        </summary>
+
+        ```json
+        {
+            /*
+            The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
+            */
+            "iss": "https://accounts.google.com",
+            
+            /*
+            The client_id of the authorized presenter. This claim is only needed when the party requesting the ID token is not the same as the audience of the ID token. 
+            This may be the case at Google for hybrid apps where a web application and Android app have a different OAuth 2.0 client_id but share the same Google APIs project.
+            */
+            "azp": "GOOGLE_CLIENT_ID", 
+
+            /*
+            The audience that this ID token is intended for. It must be one of the OAuth 2.0 client IDs of your application.
+            */
+            "aud": "GOOGLE_CLIENT_ID", 
+            
+            /*
+            An identifier for the user, unique among all Google accounts and never reused.
+            A Google account can have multiple email addresses at different points in time, but the sub value is never changed.
+            Use sub within your application as the unique-identifier key for the user. Maximum length of 255 case-sensitive ASCII characters.
+            */
+            "sub": "USER_ID", 
+
+            /*
+            The user's email address. This value may not be unique to this user and is not suitable for use as a primary key. 
+            Provided only if your scope included the email scope value.
+            */
+            "email": "user@gmail.com",
+
+            /*
+            True if the user's e-mail address has been verified; otherwise false.
+            */
+            "email_verified": true, 
+            
+            /*
+            Access token hash. Provides validation that the access token is tied to the identity token.
+            If the ID token is issued with an access_token value in the server flow, this claim is always included.
+            This claim can be used as an alternate mechanism to protect against cross-site request forgery attacks.
+            If you follow:
+            https://developers.google.com/identity/protocols/oauth2/openid-connect#createxsrftoken
+            and
+            https://developers.google.com/identity/protocols/oauth2/openid-connect#confirmxsrftoken
+            it is not necessary to verify the access token.
+            */
+            "at_hash": "someNiceOverHere",
+
+
+            /*
+            The user's full name, in a displayable form. Might be provided when:
+            The request scope included the string "profile"
+            The ID token is returned from a token refresh
+            When name claims are present, you can use them to update your app's user records. Note that this claim is never guaranteed to be present.
+            */
+            "name": "Meir Gabay",
+
+            /*
+            The URL of the user's profile picture. Might be provided when:
+            The request scope included the string "profile"
+            The ID token is returned from a token refresh
+            When picture claims are present, you can use them to update your app's user records. Note that this claim is never guaranteed to be present.
+            */
+            "picture": "https://lh3.googleusercontent.com/a-/AOh14Gg2SJeDqusILfvvSG0boxvXX65QYrx5U3KK38xj-A=s96-c",
+            
+            
+            /*
+            The user's given name(s) or first name(s). Might be provided when a name claim is present.
+            */
+            "given_name": "Meir",
+
+            /*
+            The user's surname(s) or last name(s). Might be provided when a name claim is present.
+            */
+            "family_name": "Gabay",
+
+            /*
+            The user's locale, represented by a BCP 47 language tag. Might be provided when a name claim is present.
+            */
+            "locale": "en-GB",
+
+
+            /*
+            The time the ID token was issued. Represented in Unix time (integer seconds).
+            */
+            "iat": 1618059677,
+
+            /*
+            Expiration time on or after which the ID token must not be accepted. Represented in Unix time (integer seconds).
+            */        
+            "exp": 1618063277
+        }
+        ```
+
+        </details>
+
+        <details>
+
+
+        <summary>
+        OAuth2 - ID token's payload - Expand/Collapse
+        </summary>
+
+        ```json
+        }
+            /*
+            The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
+            */
+            "iss": "https://accounts.google.com",
+            
+            /*
+            The client_id of the authorized presenter. This claim is only needed when the party requesting the ID token is not the same as the audience of the ID token. 
+            This may be the case at Google for hybrid apps where a web application and Android app have a different OAuth 2.0 client_id but share the same Google APIs project.
+            */
+            "azp": "GOOGLE_CLIENT_ID", 
+
+            /*
+            The audience that this ID token is intended for. It must be one of the OAuth 2.0 client IDs of your application.
+            */
+            "aud": "GOOGLE_CLIENT_ID", 
+            
+            /*
+            An identifier for the user, unique among all Google accounts and never reused.
+            A Google account can have multiple email addresses at different points in time, but the sub value is never changed.
+            Use sub within your application as the unique-identifier key for the user. Maximum length of 255 case-sensitive ASCII characters.
+            */
+            "sub": "USER_ID", 
+
+
+            /*
+            The user's email address. This value may not be unique to this user and is not suitable for use as a primary key. 
+            Provided only if your scope included the email scope value.
+            */
+            "email": "user@gmail.com",
+
+
+            /*
+            True if the user's e-mail address has been verified; otherwise false.
+            */
+            "email_verified": true, 
+
+            /*
+            Access token hash. Provides validation that the access token is tied to the identity token.
+            If the ID token is issued with an access_token value in the server flow, this claim is always included.
+            This claim can be used as an alternate mechanism to protect against cross-site request forgery attacks.
+            If you follow:
+            https://developers.google.com/identity/protocols/oauth2/openid-connect#createxsrftoken
+            and
+            https://developers.google.com/identity/protocols/oauth2/openid-connect#confirmxsrftoken
+            it is not necessary to verify the access token.
+            */
+            "at_hash": "someNiceOverHere",            
+
+
+            /*
+            The time the ID token was issued. Represented in Unix time (integer seconds).
+            */
+            "iat": 1618059677,
+
+
+            /*
+            Expiration time on or after which the ID token must not be accepted. Represented in Unix time (integer seconds).
+            */        
+            "exp": 1618063277
+        }
+        ```
+
+        </details>
 
     ![results-darker-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-darker-cat.png)
 
@@ -343,9 +534,45 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 ## Authentication Summary
 
 - I find it best to have a dedicated subdomain for Authentication services, as it allows using cookies with `*.kubemaster.me` and acts as an isolated service from the entire application
-- It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
 - In case it's not clear - The *Authorised JavaScript origins* and *Authorised redirect URIs* that were declared in Google's Developer Console are used by oauth2-proxy, there's not a single time where Google tries to query your domains, this is why it's possible to make it work locally.
 - Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it and it helped me to understand the whole flow.
+- Using bare OAuth2 (without OIDC) means that if the app needs more details about the authenticated user, such as `name`, then the app will have to make another request from the backend to get this information. With OAuth2 + OIDC you enjoy the extra details about the user.
+- It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
+
+---
+
+## Local Development (CI) And Deployment (CD)
+
+
+### Build The Application (CI)
+
+Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the simpler solution - using minikube's Docker daemon, instead of Windows/WSL2 Docker daemon for building Docker images.
+
+1. **WSL2**: Set `docker` command to use minikube's Docker daemon
+    ```bash
+    eval `minikube docker-env` # from now on the `docker` command refers to minikube's Docker daemon
+
+    # To undo the above command and use Windows/WSL2's Docker daemon
+    eval `minikube docker-env --unset`
+    ```
+
+1. **WSL2**: Build the docker-cats application locally using minikube's Docker daemon
+    ```bash
+    git clone https://github.com/unfor19/docker-cats.git
+    cd docker-cats
+
+    eval `minikube docker-env` # Using minikube's Docker daemon
+    docker build -t unfor19/docker-cats:latest .
+    ```
+
+### Deploy The Application (CD)
+
+To deploy the application we'll use the built-in kubectl command [rollout restart deployment/deployment-name](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources). And of course, we'll probably create some Makefile or a bash script that runs both `build` and `deploy`.
+
+1. **WSL2**:
+    ```bash
+    kubectl rollout restart deployment/baby deployment/green deployment/dark deployment/darker
+    ```
 
 ---
 
@@ -429,10 +656,8 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 
 Sections that will be added to this project.
 
-1. Local development (CI) of [docker-cats](https://github.com/unfor19/docker-cats)
-1. Local deployment (CD) of [docker-cats](https://github.com/unfor19/docker-cats)
 1. How to create and manage Kubernetes Secrets with [HashiCorp's Vault](https://www.vaultproject.io/)
-1. How to add how to add more nodes
+1. How to add more nodes
     ```bash
     minikube node add --worker=true
     ```

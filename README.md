@@ -532,7 +532,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 - I find it best to have a dedicated subdomain for Authentication services, as it allows using cookies with `*.kubemaster.me` and acts as an isolated service from the entire application
 - In case it's not clear - The *Authorised JavaScript origins* and *Authorised redirect URIs* that were declared in Google's Developer Console are used by oauth2-proxy, there's not a single time where Google tries to query your domains, this is why it's possible to make it work locally.
 - Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it and it helped me to understand the whole flow.
-- Using bare OAuth2 (without OIDC) means that if the app needs more details about the authenticated user, such as `name`, then the app will have to make another request from the backend to get this information. With OAuth2 + OIDC you enjoy the extra details about the user.
+- Using bare OAuth2 (without OIDC) means that if the app needs more details about the authenticated user, such as `name`, then the app will have to make another request from the backend to get this information. With OAuth2 + OIDC you benefit from having extra details about the user in a single request.
 - It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
 
 ---

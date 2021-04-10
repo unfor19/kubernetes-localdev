@@ -226,9 +226,9 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     helm repo add jetstack https://charts.jetstack.io && \
     helm repo update                                  && \
     kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
-    helm upgrade --install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
+    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```
-1. **IMPORTANT**: Wait ~30 seconds for cert-manager to be ready before proceeding. The ClusterIssuer will fail to create if cert-manager is not ready, see the Troubleshooting section if you experience any issues
+1. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready, see the Troubleshooting section if you experience any issues
 1. **WSL2**: Create a ClusterIssuer, Certificate and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses

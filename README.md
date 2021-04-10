@@ -1,9 +1,9 @@
 # kubernetes-localdev <!-- omit in toc -->
 
-Create a local Kubernetes development environment on Windows and WSL2. Throughout this tutorial you'll gain hands-on experience with:
+Create a local Kubernetes development environment on Windows and WSL2. Throughout this tutorial, you'll gain hands-on experience with:
 
 - Creating a local Kubernetes cluster with [minikube](https://minikube.sigs.k8s.io/docs/start/)
-- Deploying applicationg in Kubernetes using [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) and this project's YAML files
+- Deploying applications in Kubernetes using [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) and this project's YAML files
 - Serving an application securely with HTTPS with [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx/) (LoadBalancer) and [cert-manager](https://github.com/jetstack/cert-manager)
 - Managing Kubernetes resources as packages using [Helm v3](https://helm.sh/)
 - Authenticating users with Google as an Identity Provider (IdP), implementing both [OAuth2](https://oauth.net/2/) and [OAuth2+OIDC](https://openid.net/connect/) using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy)
@@ -156,9 +156,9 @@ The main reasons why we deploy a [Kubernetes Ingress Controller](https://kuberne
 
 1. Load balancing traffic to services
 1. A single endpoint that is exposed to the Windows host and routes traffic to relevant services (apps)
-1. Integrated HTTPS TLS termination, when configured properly ;)
+1. Integrated HTTPS TLS termination, when appropriately configured ;)
 
-An ingress controller is needed even if you're working with a single service that doesn't even need load balancing. You can't expose multiple endpoints (services) on the same port (e.g 80, 443). This is also a good practice for production environments where you hide your services in a private network and allow traffic only from a known external endpoint, such as a load balancer.
+An ingress controller is needed even if you're working with a single service that doesn't even need load balancing. You can't expose multiple endpoints (services) on the same port (e.g., 80, 443). That is also a good practice for production environments where you hide your services in a private network and allow traffic only from a known external endpoint, such as a load balancer.
 
 - **WSL2**: Add the relevant Helm's repository and deploy the ingress controller
     ```bash
@@ -171,20 +171,20 @@ An ingress controller is needed even if you're working with a single service tha
 
 ## Support DNS resolution in Windows host
 
-To access the NGINX Ingress Controller from the Windows host machine, we need to map its domain name to `127.0.0.1` which in turn will listen to ports 80 and 443.
+To access the NGINX Ingress Controller from the Windows host machine, we need to map its domain name to `127.0.0.1`, which will listen to ports 80 and 443.
 
 - **Windows**: Edit `C:\Windows\System32\drivers\etc\hosts` with Notepad or [Notepad++](https://notepad-plus-plus.org/downloads/v7.9.5/) as Administrator and add
     ```bash
     127.0.0.1 baby.kubemaster.me green.kubemaster.me dark.kubemaster.me auth.kubemaster.me oidc.kubemaster.me darker.kubemaster.me
     ```
 
-The downside is that you have to add any subdomain the application uses, since wildcard domains such as `*.mydomain.com` are not allows in the `hosts` file. The silver lining is you won't add all the subdomains that the application uses in production, since the main goal is to test/develop only the necessary endpoints.
+The downside is that you have to add any subdomain the application uses since wildcard domains such as `*.mydomain.com` are not allowed in the `hosts` file. The silver lining is you won't add all the subdomains that the application uses in production since the main goal is to test/develop only the necessary endpoints.
 
 ---
 
 ## HTTP
 
-Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app , a simple web application which serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
+Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app, a simple web application that serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
 
 1. **WSL**: Clone this repo
@@ -196,7 +196,7 @@ Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/mas
     ```bash
     kubectl apply -f 1-baby.yaml
     ```
-1. **WSL2**: Open a new terminal window and serve NGINX Ingress Controller on Windows localhost, ports 80 and 443. This will provide the `nginx-ingress-nginx-controller` service an External IP of the Windows host `127.0.0.1`. **Keep it running in the background**
+1. **WSL2**: Open a new terminal window and serve NGINX Ingress Controller on Windows localhost, ports 80 and 443. That will provide the `nginx-ingress-nginx-controller` service an External IP of the Windows host `127.0.0.1`. **Keep it running in the background**
     ```bash
     minikube tunnel
     # ❗  The service nginx-ingress-nginx-controller requires privileged ports to be exposed: [80 443]
@@ -205,21 +205,21 @@ Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/mas
     ```
 1. **Windows**: Check that minikube exposes NGINX Ingress Controller service on **127.0.0.1**
     ![minikube-tunnel](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-tunnel.png)
-1. **Windows**: Open your browser in a new Incognito/Private window and navigate to http://baby.kubemaster.me/ (port 80) you should see a cute baby cat
+1. **Windows**: Open your browser in a new Incognito/Private window and navigate to http://baby.kubemaster.me/ (port 80). You should see a cute baby cat
 
     ![results-baby-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-baby-cat.png)
 
-**IMPORTANT**: The rest of this tutorial assumes that `minikube tunnel` is running in the background in a separated terminal.
+**IMPORTANT**: The rest of this tutorial assumes that `minikube tunnel` runs in the background in a separated terminal.
 
 ---
 
 ## HTTPS
 
-Create a local Certificate Authority certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to `Trusted Root Certificate Authorities`. We'll use this certificate authority to create a TLS certificate that will be used for local development.
+Create a local Certificate Authority certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to `Trusted Root Certificate Authorities`. We'll use that certificate authority to create a TLS certificate for local development.
 
 ### Create A Certificate Authority (CA) Certificate And Key
 
-We're going to use [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) for issueing HTTPS/TLS certificates. Before we can do that, we need to create a Certificate Authority (`rootCA.pem`) and a Certificate Authority Key (`rootCA-key.pem`). You can easily generate certificates with [mkcert](https://github.com/FiloSottile/mkcert). After you do that, verify the certificates were installed properly. To be clear, the certificates are automatically generated and installed, **there's no need** to search for `.crt` and install them.
+We're going to use [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) for issuing HTTPS/TLS certificates. Before we can do that, we need to create a Certificate Authority (`rootCA.pem`) and a Certificate Authority Key (`rootCA-key.pem`). You can easily generate certificates with [mkcert](https://github.com/FiloSottile/mkcert). As a side-note, the certificates are generated automatically and installed, **there's no need** to search for `.crt` and install them.
 
 1. **Windows**: Open Windows PowerShell as Administrator (elevated)
     ```powershell
@@ -235,14 +235,14 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
 
     ![mkcert-certificate-installed](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/mkcert-certificate-installed.png)
 
-    **TIP**: Can't see it? Close and re-open `certmgr.msc`, it doesn't auto-refresh upon adding certificates
+    **TIP**: Can't see it? Close and re-open `certmgr.msc` as it doesn't auto-refresh upon adding certificates.
 
 
 ### Load CA Certificates To A Kubernetes Secret
 
-So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last step is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) that will be used by cert-manager to issue certificates.
+So far, the certificates can be recognized by the Windows machine. Now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host. That will make the certificates available in WSL2. Following that, we'll create the Kubernetes Namespace `cert-manager`. That is where all cert-manager's resources will be deployed (next section). The last step is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) which cert-manager will use to issue certificates.
 
-**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/config` since I got some weird errors so I used `cp` as an alternative.
+**NOTE**: I preferred to use a symlink to sync between Windows and WSL2, without the need to `cp` every time something changes. I haven't done it for `.kube/config` since I got some weird errors, so I used `cp` as an alternative.
 
 1. **WSL2**: Mount the certificates that were created with `mkcert` from the Windows host to WSL
     ```bash
@@ -272,7 +272,7 @@ So far the certificates are recognized by the Windows machine, now it's time to 
 
 ### Install Cert-Manager And Issue A Certificate
 
-Finally, we're going to deploy cert-manager with Helm and then create cert-manager's [custom resource definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), one of them is the [ClusterIssuer](https://docs.cert-manager.io/en/release-0.11/reference/clusterissuers.html). The ClusterIssuer is used by the [Certificate CRD](https://docs.cert-manager.io/en/release-0.11/reference/certificates.html) which in turn provides ability to terminate TLS connection in NGINX Ingress Controller.
+Finally, we're going to deploy cert-manager with Helm and then create cert-manager's [custom resource definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), one of them is the [ClusterIssuer](https://docs.cert-manager.io/en/release-0.11/reference/clusterissuers.html). The [Certificate CRD](https://docs.cert-manager.io/en/release-0.11/reference/certificates.html) uses the ClusterIssuer to generate a Kubernetes TLS Secret. Eventually, the NGINX Ingress controller will use the created Kubernetes TLS Secret to terminate TLS connections (HTTPS --> HTTP).
 
 1. **WSL2**: Add cert-manager to the Helm's repo, create cert-manager's CRDs and deploy cert-manager.
     ```bash
@@ -281,7 +281,7 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
     helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```
-1. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready, see the Troubleshooting section if you experience any issues
+1. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the Troubleshooting section if you experience any issues
 1. **WSL2**: Create a ClusterIssuer, Certificate and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses
@@ -292,7 +292,7 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
      # Deploy sample app
     kubectl apply -f 2-green.yaml
     ```
-1. **Windows**: Check connectivity to the deployed `green` app, open browser and navigate to https://green.kubemaster.me (port 443) you should see a cat in a green scenery
+1. **Windows**: Check connectivity to the deployed `green` app, open browser, and navigate to https://green.kubemaster.me (port 443). You should see a cat in a green scenery
 
     ![results-baby-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-green-cat.png)
 
@@ -367,9 +367,9 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 
 ## Authentication - OIDC
 
-In the previous step OAuth2 was used for authentication, though it's main purpose is for **authorization**. For **authentication** it is best to use [Open ID Connect (OIDC)](https://developers.google.com/identity/protocols/oauth2/openid-connect) whenever it's possible. The main benefit is that OIDC also provides the endpoint `/userinfo`, so the application can easily read a [JSON Web Token (JWT)](https://jwt.io/) and get the user details such as full name and locale (preferred language).
+OAuth2 was used for authentication in the previous step, though its primary purpose is for **authorization**. For **authentication**, it is best to use [Open ID Connect (OIDC)](https://developers.google.com/identity/protocols/oauth2/openid-connect) whenever it's possible. The main benefit is that OIDC also provides the endpoint `/userinfo`, so the application can easily read a [JSON Web Token (JWT)](https://jwt.io/) and get the user details such as full name and locale (preferred language).
 
-As demonstrated in the below image, OIDC **does not** replace OAuth2. OIDC is an external on top of OAuth2 which provides a better way to handle authentication.
+As demonstrated in the below image, OIDC **does not** replace OAuth2. OIDC is a layer on top of OAuth2, which provides a better way to handle authentication.
 
 ![oauth-oidc-layers](https://d33wubrfki0l68.cloudfront.net/9ef5593f84648b223311c06be35560777b7dcf36/d16d7/assets-jekyll/blog/spring-boot-2.1/oauth2-and-oidc-a4379ecfcfd75f820b98f6a05951f33e33384532d89c410f9decf4ac7db2c5b8.png)
 
@@ -380,7 +380,7 @@ Image Source: https://developer.okta.com/blog/2018/11/26/spring-boot-2-dot-1-oid
 
 The deployment steps are going to same as before, though I do recommend viewing the files [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml) and [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml), while comparing them to [3-oauth2-proxy.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-oauth2-proxy.yaml) and [3-dark.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-dark.yaml).
 
-The main difference is in the `args` of oauth2-proxy's Deployment, where the provider is not using the default OAuth2 protocol for authentication, instead, it's using the OIDC protocol.
+The main difference is in the `args` of oauth2-proxy's Deployment, where the provider is not using the default OAuth2 protocol for authentication; instead, it's using the OIDC protocol.
 
 1. **WSL**: Deploy OAuth-Proxy-OIDC and the sample `darker` application
     ```bash
@@ -390,9 +390,9 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
     kubectl apply -f 4-darker-oidc.yaml
     ```
 1. **Windows**: Open a browser in a new Incognito/Private window and navigate to https://darker.kubemaster.me and login with your Google user. You should see the same dark cat, but the message now contains your full name.
-    - **NOTE**: If you have an existing browser windwow, even if it's incognito, then you might have already autehnticated. You can verify it by checking if the cookie `_oauth2_proxy` exists. To get the full flow, close all incognito windows and then open a new browser windows in incognito https://darker.kubemaster.me
-    - **NOTE**: If you've already authenticated when you navigated to https://dark.kubemaster.me (OAuth2), then you won't be prompted to be logged in when you navigate to https://darker.kubemaster.me (OIDC). Authentication is done once and subsequent requests are verified by `oauth-proxy2` with the secret cookie `_oauth2_proxy` which is set to any subdomain `.kubemaster.me`. This goes the other way around, if you've already authenticated on https://darker.kubemaster.me then you can also access https://darker.kubemaster.me.
-    - **NOTE**: Authenticating with OIDC (darker) provides more details about the authenticated user, therefore it's possible to inject the name of the user in the application. If you logged in with OAuth2 (dark) then your name won't be displayed in the message "Hello YOUR_GOOGLE_NAME". Google specifies the available user attributes in the [ID token's payload](https://developers.google.com/identity/protocols/oauth2/openid-connect#an-id-tokens-payload). Click the Expand/Collapse buttons to view the available attributes for OIDC and OAuth2.
+    - **NOTE**: If you have an existing browser window, even if it's incognito, then you might have already authenticated. You can verify it by checking if the cookie `_oauth2_proxy` exists. To get the entire flow, close all incognito windows and then open a new browser window in incognito https://darker.kubemaster.me
+    - **NOTE**: If you've already authenticated when you navigated to https://dark.kubemaster.me (OAuth2), then you won't be prompted to be logged in when you navigate to https://darker.kubemaster.me (OIDC). Authentication occurs once, and then `oauth-proxy2` verifies the authenticated user with the secret cookie `_oauth2_proxy` for all subsequent requests. The cookie's domain is `.kubemaster.me` (includes any subdomain). That goes the other way around; if you've already authenticated on https://darker.kubemaster.me, you can also access https://dark.kubemaster.me.
+    - **NOTE**: Authenticating with OIDC (darker) provides more details about the authenticated user; therefore, it's possible to inject the user's name into the application. If you logged in with OAuth2 (dark), then your name won't be displayed in the message "Hello YOUR_GOOGLE_NAME". Google specifies the available user attributes in the [ID token's payload](https://developers.google.com/identity/protocols/oauth2/openid-connect#an-id-tokens-payload). Click the Expand/Collapse buttons to view the available attributes for OIDC and OAuth2.
 
 
         <details>
@@ -571,9 +571,9 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 ## Authentication Summary
 
 - I find it best to have a dedicated subdomain for Authentication services, as it allows using cookies with `*.kubemaster.me` and acts as an isolated service from the entire application
-- In case it's not clear - The *Authorised JavaScript origins* and *Authorised redirect URIs* that were declared in Google's Developer Console are used by oauth2-proxy, there's not a single time where Google tries to query your domains, this is why it's possible to make it work locally.
-- Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it and it helped me to understand the whole flow.
-- Using bare OAuth2 (without OIDC) means that if the app needs more details about the authenticated user, such as `name`, then the app will have to make another request from the backend to get this information. With OAuth2 + OIDC you benefit from having extra details about the user in a single request.
+- The *Authorised JavaScript origins* and *Authorised redirect URIs* that we/ve declared in Google's Developer Console are used by oauth2-proxy. There's not a single time where Google tries to query your domains; this is why it's possible to make it work locally.
+- Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it, and it helped me to understand the whole flow.
+- Using bare OAuth2 (without OIDC) means that if the app needs more details about the authenticated user, such as `name`, then the app will have to make another request from the backend to get this information. With OAuth2 + OIDC, you benefit from having extra details about the user in a single request.
 - It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
 
 ---
@@ -583,11 +583,11 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 
 ### Build The Application (CI)
 
-Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the simpler solution - using minikube's Docker daemon, instead of Windows/WSL2 Docker daemon for building Docker images.
+Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker daemon, instead of Windows/WSL2 Docker daemon for building Docker images.
 
 1. **WSL2**: Set `docker` command to use minikube's Docker daemon
     ```bash
-    eval `minikube docker-env` # from now on the `docker` command refers to minikube's Docker daemon
+    eval `minikube docker-env` # from now on, the `docker` command refers to minikube's Docker daemon
 
     # To undo the above command and use Windows/WSL2's Docker daemon
     eval `minikube docker-env --unset`
@@ -604,7 +604,7 @@ Initially, I've tried using a private local Docker repository, which was a night
 
 ### Deploy The Application (CD)
 
-To deploy the application we'll use the built-in kubectl command [rollout restart deployment/deployment-name](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources). And of course, we'll probably create some Makefile or a bash script that runs both `build` and `deploy`.
+We'll use the built-in kubectl command [rollout restart deployment/deployment-name](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources). And of course, we'll probably create some Makefile or a bash script that runs both `build` and `deploy`.
 
 1. **WSL2**:
     ```bash
@@ -639,12 +639,12 @@ To deploy the application we'll use the built-in kubectl command [rollout restar
 1. **Ingress**: Make sure you expose the cluster to the host with `minikube tunnel` before trying to access the application with the browser
     - ERR_CONNECTION_REFUSED
         ![troubleshooting-err-connection-refused](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-err-connection-refused.png)
-1. **Ingress**: Path based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.hml` is successful but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. Path based ingresses are mostly used for serving APIs, for example `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) host based ingresses for serving static pages, just like I did in this project.
-1. **Ingress**: version deprecation warning - ignore this warning, this is the latest version supported by the NGINX Ingress Controller
+1. **Ingress**: Path-based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.html` is successful, but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. It's best to use Path-based ingresses for serving APIs, for example, `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) Host-based ingresses for serving static pages, just like I did in this project.
+1. **Ingress**: version deprecation warning - ignore this warning; this is the latest version supported by the NGINX Ingress Controller
     ```bash
     Warning: networking.k8s.io/v1beta1 Ingress is deprecated in v1.19+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
     ```
-1. **HTTPS**: Certificate is invalid in browser - Open your browser a new Incognito/Private window
+1. **HTTPS**: Certificate is invalid in the browser - Open your browser a new Incognito/Private window
     - ERR_CONNECTION_REFUSED
 
         ![troubleshooting-err-connection-refused](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-err-connection-refused.png)
@@ -659,7 +659,7 @@ To deploy the application we'll use the built-in kubectl command [rollout restar
         ```
         Error from server (NotFound): error when deleting "cert-manager/clusterissuer.yaml": clusterissuers.cert-manager.io "tls-ca-issuer" not found
         ```
-    - Wait for cert-manager to be healthy, check all logs of the pods `cert-manager`, `cert-manager-cainjector` and `cert-manager-webhook`
+    - Wait for cert-manager to be healthy, check all logs of the pods `cert-manager`, `cert-manager-cainjector`, and `cert-manager-webhook`
         ```
         Error from server (InternalError): error when creating "cert-manager/clusterissuer.yaml": Internal error occurred: failed calling webhook "webhook.cert-manager.io": Post "https://cert-manager-webhook.cert-manager.svc:443/mutate?timeout=10s": dial tcp 10.102.252.218:443: connect: connection refused    
         ```
@@ -690,8 +690,6 @@ To deploy the application we'll use the built-in kubectl command [rollout restar
 
 
 ## Future Work
-
-Sections that will be added to this project.
 
 1. How to create and manage Kubernetes Secrets with [HashiCorp's Vault](https://www.vaultproject.io/)
 1. How to add more nodes

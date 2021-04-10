@@ -32,6 +32,8 @@ spec:
           env:
             - name: APP_NAME
               value: dark
+            - name: FROM_AUTHOR              
+              value: darker
           ports:
             - containerPort: 8080
 ---

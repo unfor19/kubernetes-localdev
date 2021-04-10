@@ -262,6 +262,7 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
 We'll use [oauth2-proxy]() to proxy requests to Google's authentication service. Authenticated users are redirected to the initial URL that was requested ([https://\$host\$escaped_request_uri](https://kubernetes.github.io/ingress-nginx/examples/auth/oauth-external-auth/)).
 
 ![oauth2-proxy-flow](https://cloud.githubusercontent.com/assets/45028/8027702/bd040b7a-0d6a-11e5-85b9-f8d953d04f39.png)
+
 Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 
 
@@ -330,7 +331,6 @@ In the previous step OAuth2 was used for authentication, though it's main purpos
 As demonstrated in the below image, OIDC **does not** replace OAuth2. OIDC is an external on top of OAuth2 which provides a better way to handle authentication.
 
 ![oauth-oidc-layers](https://d33wubrfki0l68.cloudfront.net/9ef5593f84648b223311c06be35560777b7dcf36/d16d7/assets-jekyll/blog/spring-boot-2.1/oauth2-and-oidc-a4379ecfcfd75f820b98f6a05951f33e33384532d89c410f9decf4ac7db2c5b8.png)
-
 
 Image Source: https://developer.okta.com/blog/2018/11/26/spring-boot-2-dot-1-oidc-oauth2-reactive-apis
 

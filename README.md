@@ -362,6 +362,41 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 
 ---
 
+## Local Development (CI) And Deployment (CD)
+
+
+### Build The Application (CI)
+
+Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the simpler solution - using minikube's Docker daemon, instead of Windows/WSL2 Docker daemon for building Docker images.
+
+1. **WSL2**: Set `docker` command to use minikube's Docker daemon
+    ```bash
+    eval `minikube docker-env` # from now on the `docker` command refers to minikube's Docker daemon
+
+    # To undo the above command and use Windows/WSL2's Docker daemon
+    eval `minikube docker-env --unset`
+    ```
+
+1. **WSL2**: Build the docker-cats application locally using minikube's Docker daemon
+    ```bash
+    git clone https://github.com/unfor19/docker-cats.git
+    cd docker-cats
+
+    eval `minikube docker-env` # Using minikube's Docker daemon
+    docker build -t unfor19/docker-cats:latest .
+    ```
+
+### Deploy The Application (CD)
+
+To deploy the application we'll use the built-in kubectl command [rollout restart deployment/deployment-name](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources). And of course, we'll probably create some Makefile or a bash script that runs both `build` and `deploy`.
+
+1. **WSL2**:
+    ```bash
+    kubectl rollout restart deployment/baby deployment/green deployment/dark deployment/darker
+    ```
+
+---
+
 ## Cleanup
 
 **IMPORTANT**: Quit LENS before proceeding

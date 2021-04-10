@@ -28,7 +28,7 @@ Table Of Contents
   - [Install Cert-Manager And Issue A Self-Signed Certificate](#install-cert-manager-and-issue-a-self-signed-certificate)
 - [Authentication - OAuth2](#authentication---oauth2)
   - [Create Google's Credentials](#create-googles-credentials)
-  - [Creating Kubernetes secrets For credentials](#creating-kubernetes-secrets-for-credentials)
+  - [Create Kubernetes Secrets For Google's Credentials](#create-kubernetes-secrets-for-googles-credentials)
   - [Deploy OAuth2-Proxy And Protect An Application](#deploy-oauth2-proxy-and-protect-an-application)
 - [Authentication - OIDC](#authentication---oidc)
   - [Deploy OAuth2-Proxy And Use OIDC](#deploy-oauth2-proxy-and-use-oidc)
@@ -331,7 +331,7 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
     Click **CREATE**
     - Save **Your Client ID** and **Your Client Secret** in a safe place, we'll use them in the following section
 
-### Creating Kubernetes secrets For credentials
+### Create Kubernetes Secrets For Google's Credentials
 
 1. **WSL2**:
 
@@ -571,10 +571,10 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 ## Authentication Summary
 
 - I find it best to have a dedicated subdomain for Authentication services, as it allows using cookies with `*.kubemaster.me` and acts as an isolated service from the entire application
-- The *Authorised JavaScript origins* and *Authorised redirect URIs* that we've declared in Google's Developer Console are used by oauth2-proxy. There's not a single time where Google tries to query your domains; this is why it's possible to make it work locally.
+- The *Authorised JavaScript origins* and *Authorised redirect URIs* in Google's Developer Console are used by oauth2-proxy. There's not a single time where Google tries to query your domains; this is why it's possible to make it work locally.
 - Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it, and it helped me to understand the whole flow.
 - Using bare OAuth2 (without OIDC) means that if the app needs more details about the authenticated user, such as `name`, then the app will have to make another request from the backend to get this information. With OAuth2 + OIDC, you benefit from having extra details about the user in a single request.
-- It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
+- It's possible to access private resources by logging into https://auth.kubemaster.me and https://oidc.kubemaster.me since they both use the same COOKIE_SECRET (I think?)
 
 ---
 
@@ -617,11 +617,9 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 
 **IMPORTANT**: Quit LENS before proceeding
 
-- **WSL2**: Delete minikube's Kubernetes Cluster and 
+- **WSL2**: Delete minikube's Kubernetes Cluster and CA certificates
     ```bash
-    HOST_USERNAME="unfor19"
-    minikube delete && \
-    rm -r "/mnt/c/Users/${HOST_USERNAME}/.kube/certs /mnt/c/Users/${HOST_USERNAME}/.kube/client.* /mnt/c/Users/${HOST_USERNAME}/.kube/ca.crt"
+    minikube delete --purge --all
     ```
 - **Windows**: Uninstall **mkcert**'s SSL certifictes, run PowerShell in elevated mode
     ```bash
@@ -630,7 +628,7 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
     ```
 - **Windows**: Remove **minikube**'s SSL certifictes, hit WINKEY+R and run `certmgr.msc`
     1. Certificates - Current User > Trusted Root Certification Authorities > Certificates
-    1. Delete all minikube's certificates - **minikubeCA** and **minikube-user**
+    2. Delete all minikube's certificates - **minikubeCA** and **minikube-user**
 
 ---
 

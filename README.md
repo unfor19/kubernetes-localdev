@@ -331,7 +331,9 @@ As demonstrated in the below image, OIDC **does not** replace OAuth2. OIDC is an
 
 ![oauth-oidc-layers](https://d33wubrfki0l68.cloudfront.net/9ef5593f84648b223311c06be35560777b7dcf36/d16d7/assets-jekyll/blog/spring-boot-2.1/oauth2-and-oidc-a4379ecfcfd75f820b98f6a05951f33e33384532d89c410f9decf4ac7db2c5b8.png)
 
+
 Image Source: https://developer.okta.com/blog/2018/11/26/spring-boot-2-dot-1-oidc-oauth2-reactive-apis
+
 
 ### Deploy OAuth2-Proxy And Use OIDC
 
@@ -509,7 +511,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
             https://developers.google.com/identity/protocols/oauth2/openid-connect#confirmxsrftoken
             it is not necessary to verify the access token.
             */
-            "at_hash": "someNiceOverHere",            
+            "at_hash": "someNiceOverHere",
 
 
             /*

@@ -34,11 +34,12 @@ Create a local Kubernetes development environment on Windows and WSL2, including
 
 ## Create a Kubernetes Cluster (WSL2)
 
-```bash
-minikube start --driver=docker --kubernetes-version=v1.20.2
-# ...
-# 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-```
+1. **WSL2**: Create a Kubernetes cluster with minkube
+    ```bash
+    minikube start --driver=docker --kubernetes-version=v1.20.2
+    # ...
+    # 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+    ```
 
 ### Configure Cluster Connection
 
@@ -77,19 +78,14 @@ minikube start --driver=docker --kubernetes-version=v1.20.2
     ```bash
     # Copy KUBECONFIG and certs from WSL2 to host
     mkdir -p "/mnt/c/Users/${HOST_USERNAME}/.kube/certs" && \
-    cp -r "${HOME}/.kube/" "/mnt/c/Users/${HOST_USERNAME}" && \
-    rm -rf "/mnt/c/Users/${HOST_USERNAME}/.kube/cache" && \
+    cp "${HOME}/.kube/config" "/mnt/c/Users/${HOST_USERNAME}" && \
     # Change paths from `/home/$USER/*.minikube` with to `certs`
     sed 's~/home/'"${USER}"'.*.minikube~certs~g' "${HOME}/.kube/config" > "/mnt/c/Users/${HOST_USERNAME}/.kube/config"
     ```
 1. **WSL2**: Copy minikube's certificates to Windows host
     ```bash
-    # ALL Minikube
     # Client certificate
-    cp  ~/.minikube/profiles/minikube/client.crt /mnt/c/Users/unfor19/.kube/certs/client.crt && \
-    cp  ~/.minikube/profiles/minikube/client.key /mnt/c/Users/unfor19/.kube/certs/client.key && \
-    # Certificate Authority (CA) certificate
-    cp  ~/.minikube/ca.crt /mnt/c/Users/unfor19/.kube/certs/ca.crt && \
+    cp  "${HOME}/.minikube/profiles/minikube/client.crt" "${HOME}/.minikube/profiles/minikube/client.key" "${HOME}/.minikube/ca.crt" "/mnt/c/Users/${HOST_USERNAME}/.kube/certs/" && \
     # Prepare URL for Windows
     echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version" 
     ```
@@ -126,7 +122,7 @@ An ingress controller is needed even if you're working with a single service tha
     ```bash
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx && \
     helm repo update && \
-    helm upgrade --install nginx ingress-nginx/ingress-nginx --set controller.kind=DaemonSet # `upgrade --install` makes it idempotent
+    helm upgrade --install --wait nginx ingress-nginx/ingress-nginx --set controller.kind=DaemonSet # `upgrade --install` makes it idempotent
     ```
 
 ---
@@ -148,6 +144,12 @@ The downside is that you have to add any subdomain the application uses, since w
 
 Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app , a simple web application which serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
+
+1. **WSL**: Clone this repo
+    ```bash
+    git clone https://github.com/unfor19/kubernetes-localdev.git
+    cd kubernetes-localdev
+    ```
 1. **WSL2**: Deploy the application
     ```bash
     kubectl apply -f 1-baby.yaml
@@ -207,12 +209,21 @@ So far the certificates are recognized by the Windows machine, now it's time to 
     ```
 
     ```bash
+    # Create symlink `ln -s`
     CAROOT_DIR="/mnt/media/caroot" && \
-    sudo ln -s "/mnt/c/Users/${HOST_USERNAME}/AppData/Local/mkcert/" "$CAROOT_DIR" || \
-    ls -l $CAROOT_DIR # Verify
+    sudo ln -s "/mnt/c/Users/${HOST_USERNAME}/AppData/Local/mkcert" "$CAROOT_DIR"
+    ```
+
+    ```bash
+    # Validate symlink
+    ls -l "$CAROOT_DIR" && ls "$CAROOT_DIR"
+
+    # Valid Output
+    # lrwxrwxrwx 1 root root 41 Apr 10 13:12 /mnt/media/caroot -> /mnt/c/Users/unfor19/AppData/Local/mkcert
+    # rootCA-key.pem  rootCA.pem
     ```
 1. **WSL2**: Create the [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) namespace and create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets)
-    ```
+    ```bash
     kubectl create namespace cert-manager && \
     kubectl -n cert-manager create secret tls kubemaster-me-ca-tls-secret --key="${CAROOT_DIR}/rootCA-key.pem" --cert="${CAROOT_DIR}/rootCA.pem"
     ```
@@ -223,8 +234,8 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
 
 1. **WSL2**: Add cert-manager to the Helm's repo, create cert-manager's CRDs and deploy cert-manager.
     ```bash
-    helm repo add jetstack https://charts.jetstack.io && \
-    helm repo update                                  && \
+    helm repo add jetstack https://charts.jetstack.io              && \
+    helm repo update                                               && \
     kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
     helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```

@@ -25,7 +25,7 @@ Table Of Contents
 - [HTTPS](#https)
   - [Create A Certificate Authority (CA) Certificate And Key](#create-a-certificate-authority-ca-certificate-and-key)
   - [Load CA Certificates To A Kubernetes Secret](#load-ca-certificates-to-a-kubernetes-secret)
-  - [Install Cert-Manager And Issue A Certificate](#install-cert-manager-and-issue-a-certificate)
+  - [Install Cert-Manager And Issue A Self-Signed Certificate](#install-cert-manager-and-issue-a-self-signed-certificate)
 - [Authentication - OAuth2](#authentication---oauth2)
   - [Create Google's Credentials](#create-googles-credentials)
   - [Creating Kubernetes secrets For credentials](#creating-kubernetes-secrets-for-credentials)
@@ -270,7 +270,7 @@ So far, the certificates can be recognized by the Windows machine. Now it's time
     kubectl -n cert-manager create secret tls kubemaster-me-ca-tls-secret --key="${CAROOT_DIR}/rootCA-key.pem" --cert="${CAROOT_DIR}/rootCA.pem"
     ```
 
-### Install Cert-Manager And Issue A Certificate
+### Install Cert-Manager And Issue A Self-Signed Certificate
 
 Finally, we're going to deploy cert-manager with Helm and then create cert-manager's [custom resource definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), one of them is the [ClusterIssuer](https://docs.cert-manager.io/en/release-0.11/reference/clusterissuers.html). The [Certificate CRD](https://docs.cert-manager.io/en/release-0.11/reference/certificates.html) uses the ClusterIssuer to generate a Kubernetes TLS Secret. Eventually, the NGINX Ingress controller will use the created Kubernetes TLS Secret to terminate TLS connections (HTTPS --> HTTP).
 

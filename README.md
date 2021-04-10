@@ -349,13 +349,13 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 1. **Windows**: Open a browser in a new Incognito/Private window and navigate to https://darker.kubemaster.me and login with your Google user. You should see the same dark cat, but the message now contains your full name.
     - **NOTE**: If you have an existing browser windwow, even if it's incognito, then you might have already autehnticated. You can verify it by checking if the cookie `_oauth2_proxy` exists. To get the full flow, close all incognito windows and then open a new browser windows in incognito https://darker.kubemaster.me
     - **NOTE**: If you've already authenticated when you navigated to https://dark.kubemaster.me (OAuth2), then you won't be prompted to be logged in when you navigate to https://darker.kubemaster.me (OIDC). Authentication is done once and subsequent requests are verified by `oauth-proxy2` with the secret cookie `_oauth2_proxy` which is set to any subdomain `.kubemaster.me`. This goes the other way around, if you've already authenticated on https://darker.kubemaster.me then you can also access https://darker.kubemaster.me.
-    - **NOTE**: Authenticating with OIDC (darker) provides more details about the authenticated user, therefore it's possible to inject the name of the user in the application. If you logged in with OAuth2 (dark) then your name won't be displayed in the message "Hello YOUR_GOOGLE_NAME". Google specifies the available user attributes when querying the `userinfo` endpoint in [ID token's payload](https://developers.google.com/identity/protocols/oauth2/openid-connect#an-id-tokens-payload). Click the Expand/Collapse button to view the all available attributes.
+    - **NOTE**: Authenticating with OIDC (darker) provides more details about the authenticated user, therefore it's possible to inject the name of the user in the application. If you logged in with OAuth2 (dark) then your name won't be displayed in the message "Hello YOUR_GOOGLE_NAME". Google specifies the available user attributes in the [ID token's payload](https://developers.google.com/identity/protocols/oauth2/openid-connect#an-id-tokens-payload). Click the Expand/Collapse buttons to view the available attributes for OIDC and OAuth2.
 
 
         <details>
 
         <summary>
-        ID token's payload - Expand/Collapse
+        OIDC - ID token's payload - Expand/Collapse
         </summary>
 
         ```json
@@ -454,6 +454,79 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 
         </details>
 
+        <details>
+
+
+        <summary>
+        OAuth2 - ID token's payload - Expand/Collapse
+        </summary>
+
+        ```json
+        }
+            /*
+            The Issuer Identifier for the Issuer of the response. Always https://accounts.google.com or accounts.google.com for Google ID tokens.
+            */
+            "iss": "https://accounts.google.com",
+            
+            /*
+            The client_id of the authorized presenter. This claim is only needed when the party requesting the ID token is not the same as the audience of the ID token. 
+            This may be the case at Google for hybrid apps where a web application and Android app have a different OAuth 2.0 client_id but share the same Google APIs project.
+            */
+            "azp": "GOOGLE_CLIENT_ID", 
+
+            /*
+            The audience that this ID token is intended for. It must be one of the OAuth 2.0 client IDs of your application.
+            */
+            "aud": "GOOGLE_CLIENT_ID", 
+            
+            /*
+            An identifier for the user, unique among all Google accounts and never reused.
+            A Google account can have multiple email addresses at different points in time, but the sub value is never changed.
+            Use sub within your application as the unique-identifier key for the user. Maximum length of 255 case-sensitive ASCII characters.
+            */
+            "sub": "USER_ID", 
+
+
+            /*
+            The user's email address. This value may not be unique to this user and is not suitable for use as a primary key. 
+            Provided only if your scope included the email scope value.
+            */
+            "email": "user@gmail.com",
+
+
+            /*
+            True if the user's e-mail address has been verified; otherwise false.
+            */
+            "email_verified": true, 
+
+            /*
+            Access token hash. Provides validation that the access token is tied to the identity token.
+            If the ID token is issued with an access_token value in the server flow, this claim is always included.
+            This claim can be used as an alternate mechanism to protect against cross-site request forgery attacks.
+            If you follow:
+            https://developers.google.com/identity/protocols/oauth2/openid-connect#createxsrftoken
+            and
+            https://developers.google.com/identity/protocols/oauth2/openid-connect#confirmxsrftoken
+            it is not necessary to verify the access token.
+            */
+            "at_hash": "someNiceOverHere",            
+
+
+            /*
+            The time the ID token was issued. Represented in Unix time (integer seconds).
+            */
+            "iat": 1618059677,
+
+
+            /*
+            Expiration time on or after which the ID token must not be accepted. Represented in Unix time (integer seconds).
+            */        
+            "exp": 1618063277
+        }
+        ```
+
+        </details>
+
     ![results-darker-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-darker-cat.png)
 
 ---
@@ -464,7 +537,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 - In case it's not clear - The *Authorised JavaScript origins* and *Authorised redirect URIs* that were declared in Google's Developer Console are used by oauth2-proxy, there's not a single time where Google tries to query your domains, this is why it's possible to make it work locally.
 - Here's great 1 hour session about OAuth2 and OIDC - [OAuth 2.0 and OpenID Connect (in plain English)](https://www.youtube.com/watch?v=996OiexHze0&ab_channel=OktaDev). I watched every bit of it and it helped me to understand the whole flow.
 - Using bare OAuth2 (without OIDC) means that if the app needs more details about the authenticated user, such as `name`, then the app will have to make another request from the backend to get this information. With OAuth2 + OIDC you enjoy the extra details about the user.
-- It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET and Google Credentials (I think?)
+- It's possible to access private resources by logging in both in https://auth.kubemaster.me and https://oidc.kubemaster.me since both use the same COOKIE_SECRET (I think?)
 
 ---
 

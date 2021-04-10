@@ -17,7 +17,6 @@ Table Of Contents
 
 - [Requirements](#requirements)
 - [Create a Kubernetes Cluster](#create-a-kubernetes-cluster)
-  - [Configure Cluster Connection](#configure-cluster-connection)
 - [Enable secured HTTPS access from Windows to WSL2](#enable-secured-https-access-from-windows-to-wsl2)
 - [Configure LENS](#configure-lens)
 - [NGINX Ingress Controller](#nginx-ingress-controller)
@@ -84,9 +83,6 @@ Table Of Contents
     # ...
     # 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
     ```
-
-### Configure Cluster Connection
-
 1. **WSL2**: Check connectivity - HTTPS should work since we're using `ca.crt`
     ```bash
     MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
@@ -219,7 +215,7 @@ Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/mas
 
 ## HTTPS
 
-Create a local Certificate Authority certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to `Trusted Root Certificate Authorities`. We'll use this certificate authority to create TLS certificates that will be used for local development.
+Create a local Certificate Authority certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to `Trusted Root Certificate Authorities`. We'll use this certificate authority to create a TLS certificate that will be used for local development.
 
 ### Create A Certificate Authority (CA) Certificate And Key
 
@@ -246,7 +242,7 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
 
 So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last step is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) that will be used by cert-manager to issue certificates.
 
-**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/` since I got some weird errors so I used `cp` as an alternative.
+**NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/config` since I got some weird errors so I used `cp` as an alternative.
 
 1. **WSL2**: Mount the certificates that were created with `mkcert` from the Windows host to WSL
     ```bash
@@ -290,7 +286,8 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses
     kubectl apply -f cert-manager/clusterissuer.yaml && \
-    # Create a TLS Certificate for `kubemaster.me` and `*.kubemaster.me` (or specific sub-domains). This step is done once, there's no need to create more certificates since all of the sub-domains are covered in the same certficiate
+    # Create a TLS Certificate for `kubemaster.me` and `*.kubemaster.me` (or specific sub-domains). 
+    # IMPORTANT: This step is done once, there's no need to create more certificates since all of the sub-domains are covered in the same certficiate
     kubectl apply -f 2-certificate.yaml && \
      # Deploy sample app
     kubectl apply -f 2-green.yaml
@@ -370,7 +367,7 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 
 ## Authentication - OIDC
 
-In the previous step OAuth2 was used for authentication, though it's main purpose is for **authorization**. For **authentication** it is best to use [Open ID Connect (OIDC)](https://developers.google.com/identity/protocols/oauth2/openid-connect) whenever it's possible. The main benefit is that OIDC also provides the endpoint `/userinfo`, so the application can easily read a [JSON Web Token (JWT)](https://jwt.io/) and get the user details such as full name and email address.
+In the previous step OAuth2 was used for authentication, though it's main purpose is for **authorization**. For **authentication** it is best to use [Open ID Connect (OIDC)](https://developers.google.com/identity/protocols/oauth2/openid-connect) whenever it's possible. The main benefit is that OIDC also provides the endpoint `/userinfo`, so the application can easily read a [JSON Web Token (JWT)](https://jwt.io/) and get the user details such as full name and locale (preferred language).
 
 As demonstrated in the below image, OIDC **does not** replace OAuth2. OIDC is an external on top of OAuth2 which provides a better way to handle authentication.
 
@@ -381,9 +378,9 @@ Image Source: https://developer.okta.com/blog/2018/11/26/spring-boot-2-dot-1-oid
 
 ### Deploy OAuth2-Proxy And Use OIDC
 
-The deployment steps are going to be exactly the same as before, though I do recommend viewing the files [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml) and [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml), while comparing them to [3-oauth2-proxy.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-oauth2-proxy.yaml) and [3-dark.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-dark.yaml).
+The deployment steps are going to same as before, though I do recommend viewing the files [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml) and [4-oauth2-proxy-oidc.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/4-oauth2-proxy-oidc.yaml), while comparing them to [3-oauth2-proxy.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-oauth2-proxy.yaml) and [3-dark.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/3-dark.yaml).
 
-The main difference is in the configuration of oauth2-proxy, where the provider is not using the default OAuth2 protocol for authentication, instead it's using the OIDC protocol.
+The main difference is in the `args` of oauth2-proxy's Deployment, where the provider is not using the default OAuth2 protocol for authentication, instead, it's using the OIDC protocol.
 
 1. **WSL**: Deploy OAuth-Proxy-OIDC and the sample `darker` application
     ```bash

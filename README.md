@@ -523,7 +523,7 @@ The main difference is in the configuration of oauth2-proxy, where the provider 
 
         </details>
 
-    ![results-darker-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-darker-cat.png)
+    ![results-darker-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-darker-cat.png?dummy=null)
 
 ---
 

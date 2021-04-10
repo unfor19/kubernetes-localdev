@@ -200,7 +200,7 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
 
 ### Load CA Certificates To A Kubernetes Secret
 
-So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last is creating a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) that will be used by cert-manager to issue certificates.
+So far the certificates are recognized by the Windows machine, now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host, this will make the certificates available in WSL2. Following that we'll create the Kubernetes Namespace `cert-manager`, this is where all cert-manager's resources will be deployed (next section). The last step is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) that will be used by cert-manager to issue certificates.
 
 **NOTE**: I preferred to use a symlink to sync between Windows and WSL2 automatically, without the need to `cp` every time something changes. I haven't done it for `.kube/` since I got some weird errors so I used `cp` as an alternative.
 

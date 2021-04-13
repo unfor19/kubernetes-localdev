@@ -10,7 +10,7 @@ Throughout this self-paced course, you'll gain hands-on experience with:
 
 - Creating a local Kubernetes cluster with [minikube](https://minikube.sigs.k8s.io/docs/start/)
 - Deploying applications in Kubernetes using [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) and this project's YAML files
-- Serving an applications securely via HTTPS with [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx/) (LoadBalancer) and [cert-manager](https://github.com/jetstack/cert-manager)
+- Serving applications securely via HTTPS with [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx/) (LoadBalancer) and [cert-manager](https://github.com/jetstack/cert-manager)
 - Managing Kubernetes resources as packages using [Helm v3](https://helm.sh/)
 - Authenticating users with [Google](https://developers.google.com/identity) as an Identity Provider (IdP), implementing both [OAuth2](https://oauth.net/2/) and [OAuth2+OIDC](https://openid.net/connect/) using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy)
 - Building the webserver application [docker-cats](https://github.com/unfor19/docker-cats) and deploying it to the Kubernetes cluster with [kubectl rollout](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources)

@@ -15,6 +15,10 @@ Throughout this self-paced course, you'll gain hands-on experience with:
 - Authenticating users with [Google](https://developers.google.com/identity) as an Identity Provider (IdP), implementing both [OAuth2](https://oauth.net/2/) and [OAuth2+OIDC](https://openid.net/connect/) using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy)
 - Building the webserver application [docker-cats](https://github.com/unfor19/docker-cats) and deploying it to the Kubernetes cluster with [kubectl rollout](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources)
 
+## Asynchronous Support And Discussions <!-- omit in toc -->
+
+If you have any question, suggestion, idea, or even if you just want to show and tell about your work, feel free to create a discussion in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions).
+
 ## Table Of Contents <!-- omit in toc -->
 
 <details>

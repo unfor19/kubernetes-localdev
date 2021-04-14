@@ -33,8 +33,6 @@ Expand/Collapse
   - [Windows](#windows)
 - [Create a Kubernetes Cluster](#create-a-kubernetes-cluster)
 - [Enable secured HTTPS access from Host to minikube](#enable-secured-https-access-from-host-to-minikube)
-  - [macOS](#macos-1)
-  - [Windows](#windows-1)
 - [Configure LENS](#configure-lens)
 - [NGINX Ingress Controller](#nginx-ingress-controller)
 - [A Few Words About Helm](#a-few-words-about-helm)
@@ -206,7 +204,7 @@ Expand/Collapse
 
 The term **Host** refers to your machine (macOS/Windows). In this section we're going to install CA certificates on the Host machine (macOS/Windows)
 
-### macOS
+### macOS <!-- omit in toc -->
 
 <details>
 
@@ -230,7 +228,7 @@ The term **Host** refers to your machine (macOS/Windows). In this section we're 
 
 </details>
 
-### Windows
+### Windows <!-- omit in toc -->
 
 <details>
 

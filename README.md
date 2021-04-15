@@ -359,7 +359,7 @@ The downside is that you have to add any subdomain the application uses since wi
 
 ## HTTP
 
-Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app, a simple web application that serves static content and exposed to the Windows host with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
+Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/1-baby.yaml) app, a simple web application that serves static content and exposed to the Host (macOS/Windows) with a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
 
 1. **macOS/WSL2**: Clone this repo
@@ -395,7 +395,7 @@ Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/mas
 
 ## HTTPS
 
-Create a local [Certificate Authority](https://en.wikipedia.org/wiki/Certificate_authority) certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to [Trusted Root Certificate Authorities](https://docs.microsoft.com/en-us/windows-hardware/drivers/install/trusted-root-certification-authorities-certificate-store). We'll use that certificate authority to create a [TLS certificate](https://en.wikipedia.org/wiki/Public_key_certificate) for local development.
+Create a local [Certificate Authority](https://en.wikipedia.org/wiki/Certificate_authority) certificate and key with [mkcert](https://github.com/FiloSottile/mkcert) and install it to [Trusted Root Certificate Authorities](https://docs.microsoft.com/en-us/windows-hardware/drivers/install/trusted-root-certification-authorities-certificate-store) on Windows, and to [System Keychain](https://support.apple.com/en-il/guide/mac-help/mchlf375f392/mac) on macOS. We'll use that certificate authority to create a [TLS certificate](https://en.wikipedia.org/wiki/Public_key_certificate) for local development.
 
 ### Create A Certificate Authority (CA) Certificate And Key
 
@@ -859,7 +859,7 @@ As you can see from the last step, minikube's Docker Daemon runs containers that
 
 ## Local Development (CI) And Deployment (CD)
 
-Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker daemon, instead of Windows/WSL2 Docker daemon for building Docker images.
+Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker daemon, instead of the Host's (macOS/Windows) Docker daemon for building Docker images.
 
 ### Build The Application (CI)
 
@@ -867,11 +867,11 @@ Initially, I've tried using a private local Docker repository, which was a night
     ```bash
     eval `minikube docker-env` # from now on, the `docker` command refers to minikube's Docker daemon
 
-    # To undo the above command and use Windows/WSL2's Docker daemon
+    # To undo the above command and use macOS/Windows's Docker daemon
     eval `minikube docker-env --unset`
     ```
 
-1. **macOS/WSL2**: Build the docker-cats application locally using minikube's Docker daemon
+2. **macOS/WSL2**: Build the docker-cats application locally using minikube's Docker daemon
     ```bash
     git clone https://github.com/unfor19/docker-cats.git
     cd docker-cats

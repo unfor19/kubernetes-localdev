@@ -36,7 +36,7 @@ Expand/Collapse
 - [Configure LENS](#configure-lens)
 - [NGINX Ingress Controller](#nginx-ingress-controller)
 - [A Few Words About Helm](#a-few-words-about-helm)
-- [Support DNS resolution in Windows host](#support-dns-resolution-in-windows-host)
+- [Support DNS resolution in Host (macOS/Windows)](#support-dns-resolution-in-host-macoswindows)
 - [HTTP](#http)
 - [HTTPS](#https)
   - [Create A Certificate Authority (CA) Certificate And Key](#create-a-certificate-authority-ca-certificate-and-key)
@@ -336,7 +336,7 @@ Another option for overriding the default values is to use a user-defined `value
 
 ---
 
-## Support DNS resolution in Windows host
+## Support DNS resolution in Host (macOS/Windows)
 
 To access the NGINX Ingress Controller from the Host machine (macOS/Windows), we need to map its domain name to `127.0.0.1`, which will listen to ports 80 and 443.
 

@@ -579,8 +579,7 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
     ```
 
     ```bash
-    # Requires Python 3.6+ - sudo apt-get update && sudo apt-get install -y python3
-    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(python3 -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')" && \
+    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(docker run python:3.9.1-alpine python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')" && \
     # Create the Kubernetes Secret
     kubectl -n default create secret generic google-credentials \
         --from-literal=google_client_id="${OAUTH2_PROXY_CLIENT_ID}" \

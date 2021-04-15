@@ -49,6 +49,7 @@ Expand/Collapse
 - [Authentication - OIDC](#authentication---oidc)
   - [Deploy OAuth2-Proxy And Use OIDC](#deploy-oauth2-proxy-and-use-oidc)
 - [Authentication Summary](#authentication-summary)
+- [Docker Daemon And Minikube](#docker-daemon-and-minikube)
 - [Local Development (CI) And Deployment (CD)](#local-development-ci-and-deployment-cd)
   - [Build The Application (CI)](#build-the-application-ci)
   - [Deploy The Application (CD)](#deploy-the-application-cd)
@@ -814,12 +815,54 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 
 ---
 
+## Docker Daemon And Minikube
+
+We're running two [Docker Daemons](https://docs.docker.com/get-started/overview/#the-docker-daemon), the first one runs on the Host machine (macOS/Windows) and the second one runs in minikube's [Docker Container](https://www.docker.com/resources/what-container). I find it very hard to understand this architecture, so I've created a diagram to visualize it.
+
+![kubernetes-localdev-minikube-dockerd](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-minikube-dockerd.png?dummy=null1)
+
+Let's run some commands to see if it makes sense
+
+1. **macOS/WSL2**: Print the list of the running containers on the **Host** machine
+   ```bash
+   docker ps
+   ```
+
+   ```bash
+   # Valid output - minikube's container name is `minikube`
+   CONTAINER ID   IMAGE                                 COMMAND                  CREATED      STATUS       PORTS                                                                                                                                  NAMES
+   9cab890fc446   gcr.io/k8s-minikube/kicbase:v0.0.18   "/usr/local/bin/entr…"   5 days ago   Up 2 hours   127.0.0.1:63682->22/tcp, 127.0.0.      1:63683->2376/tcp, 127.0.0.1:63680->5000/tcp, 127.0.0.1:63681->8443/tcp, 127.0.0.1:63684->32443/tcp   minikube
+   ```
+1. **macOS/WSL2**: Use [docker exec](https://docs.docker.com/engine/reference/commandline/exec/) to get into minikube's container
+   ```bash
+   docker exec -it minikube bash
+   ```
+1. **NOTE**: For testing/debugging purposes, I prefer using `docker exec` over [minikube ssh](https://minikube.sigs.k8s.io/docs/commands/ssh/) because `docker exec` allows logging as `root`, while `minikube ssh` as the non-root user `docker`.
+1. **macOS/WSL2**: Print the list of the running containers on **minikube**
+   ```bash
+   docker ps
+   ```
+
+   ```bash
+   # Valid output
+   # root@minikube:/# docker ps
+   CONTAINER ID   IMAGE                  COMMAND                  CREATED       STATUS       PORTS     NAMES
+   d11f495c71a5   85069258b98a           "/storage-provisioner"   2 hours ago   Up 2 hours             8s_storage-provisioner_storage-provisioner_kube-system_eb1bac83-2db5-41e8-9bdd-805e3969930b_3
+    ...
+   5fbaf3683d33   k8s.gcr.io/pause:3.2   "/pause"                 2 hours ago   Up 2 hours             k8s_POD_etcd-minikube_kube-system_c31fe6a5afdd142cf3450ac972274b36_1   
+   ```
+
+Remember the section [Create a Kubernetes Cluster](#create-a-kubernetes-cluster)? We used the argument `--driver=docker`, which instructs minikube to use its [docker driver](https://minikube.sigs.k8s.io/docs/drivers/docker/). From the Kubernetes perspective, it's equivalent for choosing the [Docker runtime](https://www.docker.com/products/container-runtime#:~:text=Docker%20Engine%20is%20the%20industry's,and%20Windows%20Server%20operating%20systems.) as the [Container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes/). Eventually, this means that [Kubernetes Workloads](https://kubernetes.io/docs/concepts/workloads/) will run as Docker Containers.
+
+As you can see from the last step, minikube's Docker Daemon runs containers that belong to the [Kubernetes Cluster](https://kubernetes.io/docs/concepts/architecture/). The Kubernetes object that represents a group of containers, or a single container, is called a [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/). If you're already familiar with [Docker Compose](https://docs.docker.com/compose/), then writing a [Pod's YAML configuration](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/#pods-created-via-http) is quite similar to writing a [docker-compose.yaml](https://docs.docker.com/compose/gettingstarted/#step-3-define-services-in-a-compose-file) file.
+
+---
+
 ## Local Development (CI) And Deployment (CD)
 
+Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker daemon, instead of Windows/WSL2 Docker daemon for building Docker images.
 
 ### Build The Application (CI)
-
-Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker daemon, instead of Windows/WSL2 Docker daemon for building Docker images.
 
 1. **macOS/WSL2**: Set `docker` command to use minikube's Docker daemon
     ```bash

@@ -291,10 +291,10 @@ The term **Host** refers to your machine (macOS/Windows). In this section we're 
 The main reasons why we deploy a [Kubernetes Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
 
 1. Load balancing traffic to services
-1. A single endpoint that is exposed to the Windows host and routes traffic to relevant services (apps)
+1. A single endpoint that is exposed to the Host (macOS/Windows) and routes traffic to relevant services (apps)
 1. Integrated HTTPS TLS termination, when appropriately configured 😉
 
-An ingress controller is needed even if you're working with a single service that doesn't even need load balancing. You can't expose multiple endpoints (services) on the same port (e.g., 80, 443). That is also a good practice for production environments where you hide your services in a private network and allow traffic only from a known external endpoint, such as a load balancer.
+An ingress controller is especially useful for exposing multiple services on the same set of ports (e.g., 80, 443). That is also a good practice for production environments where you hide your services in a private network and allow traffic only from a known external endpoint, such as a load balancer.
 
 In this project, I chose to implement a Kubernetes Ingress Controller with [NGINX's Ingress Controller](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx). A great alternative is [Traefik](https://github.com/traefik/traefik-helm-chart), though NGINX is probably the most popular.
 
@@ -818,7 +818,7 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 
 We're running two [Docker Daemons](https://docs.docker.com/get-started/overview/#the-docker-daemon), the first one runs on the Host machine (macOS/Windows) and the second one runs in minikube's [Docker Container](https://www.docker.com/resources/what-container). I find it very hard to understand this architecture, so I've created a diagram to visualize it.
 
-![kubernetes-localdev-minikube-dockerd](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-minikube-dockerd.png?dummy=null1)
+![kubernetes-localdev-minikube-dockerd](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-minikube-dockerd.png?dummy=null2)
 
 Let's run some commands to see if it makes sense
 
@@ -855,28 +855,50 @@ Remember the section [Create a Kubernetes Cluster](#create-a-kubernetes-cluster)
 
 As you can see from the last step, minikube's Docker Daemon runs containers that belong to the [Kubernetes Cluster](https://kubernetes.io/docs/concepts/architecture/). The Kubernetes object that represents a group of containers, or a single container, is called a [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/). If you're already familiar with [Docker Compose](https://docs.docker.com/compose/), then writing a [Pod's YAML configuration](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/#pods-created-via-http) is quite similar to writing a [docker-compose.yaml](https://docs.docker.com/compose/gettingstarted/#step-3-define-services-in-a-compose-file) file.
 
+
+### Curl The Docker Daemons <!-- omit in toc -->
+
+If you think about it, the Docker CLI sends API requests to the [Docker Engine API](https://docs.docker.com/engine/api/v1.41/) which is part of the Docker Daemon. Let's do a quick test to see if we can [curl](https://curl.se/) the Host's (macOS/Windows) Docker Daemon and minikube's Docker Daemon.
+
+1. **macOS/WSL2**: curl the [info](https://docs.docker.com/engine/api/v1.41/#operation/SystemInfo) endpoint of the **Host's** Docker Daemon
+   ```bash
+   # Socket Request `--unix-socket`
+   curl --unix-socket /var/run/docker.sock http://127.0.0.1/info
+   ```
+
+2. **macOS/WSL2**: curl the `info` endpoint of **minikube's** Docker Daemon
+   ```bash
+   # HTTPS Request
+   curl --cacert ~/.minikube/certs/ca.pem \
+   --key ~/.minikube/certs/key.pem  --cert ~/.minikube/certs/cert.pem \
+   https://127.0.0.1:$(minikube docker-env | grep DOCKER_HOST | cut -d":" -f3 | cut -d'"' -f1)/info
+   ```
+
+
+I haven't added the expected output since it's too long and can vary a lot between different Hosts. Search the attribute `Name` in the output, for example, on **WSL2** it's `docker-desktop` (Host) and `minikube`.
+
 ---
 
 ## Local Development (CI) And Deployment (CD)
 
-Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker daemon, instead of the Host's (macOS/Windows) Docker daemon for building Docker images.
+Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker Daemon, instead of the Host's (macOS/Windows) Docker Daemon for building Docker images.
 
 ### Build The Application (CI)
 
-1. **macOS/WSL2**: Set `docker` command to use minikube's Docker daemon
+1. **macOS/WSL2**: Set `docker` command to use minikube's Docker Daemon
     ```bash
-    eval `minikube docker-env` # from now on, the `docker` command refers to minikube's Docker daemon
+    eval `minikube docker-env` # from now on, the `docker` command refers to minikube's Docker Daemon
 
-    # To undo the above command and use macOS/Windows's Docker daemon
+    # To undo the above command and use macOS/Windows's Docker Daemon
     eval `minikube docker-env --unset`
     ```
 
-2. **macOS/WSL2**: Build the docker-cats application locally using minikube's Docker daemon
+2. **macOS/WSL2**: Build the docker-cats application locally using minikube's Docker Daemon
     ```bash
     git clone https://github.com/unfor19/docker-cats.git
     cd docker-cats
 
-    eval `minikube docker-env` # Using minikube's Docker daemon
+    eval `minikube docker-env` # Using minikube's Docker Daemon
     docker build -t unfor19/docker-cats:latest .
     ```
 

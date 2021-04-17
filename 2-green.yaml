@@ -58,7 +58,7 @@ spec:
   tls:
   - hosts:
     - green.kubemaster.me
-    secretName: kubemaster-me-app-tls-secret
+    secretName: green-tls-secret
   ingressClassName: nginx
   rules:
     - host: green.kubemaster.me

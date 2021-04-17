@@ -599,7 +599,6 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
     ```
 
     ```bash
-    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(docker run --rm python:3.9.1-alpine python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')" && \
     # Create the Kubernetes Secret
     kubectl -n default create secret generic google-credentials \
         --from-literal=google_client_id="${OAUTH2_PROXY_CLIENT_ID}" \
@@ -608,8 +607,10 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 
 ### Deploy OAuth2-Proxy And Protect An Application
 
-1. **macOS/WSL2**: Deploy OAuth-Proxy and the sample `dark` application
+1. **macOS/WSL2**: Deploy [3-oauth2-proxy.yaml](./3-oauth2-proxy.yaml) and the sample [3-dark.yaml](./3-dark.yaml) application
     ```bash
+    # Create a Kubernetes Secret for oauth2-proxy `cookie-secret`
+    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(docker run --rm python:3.9.1-alpine python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')" && \
     # Deploy oauth2-proxy
     kubectl apply -f 3-oauth2-proxy.yaml && \
     # Deploy sample app `dark`, served via HTTPS and protected with Google authentication
@@ -638,7 +639,7 @@ The deployment steps are same as before, though I do recommend viewing the files
 
 The main difference is in the `args` of oauth2-proxy's Deployment, where the provider is not using the default OAuth2 protocol for authentication; instead, it's using the OIDC protocol.
 
-1. **macOS/WSL2**: Deploy OAuth-Proxy-OIDC and the sample `darker` application
+1. **macOS/WSL2**: Deploy [4-oauth2-proxy-oidc.yaml](./4-oauth2-proxy-oidc.yaml) and the sample [4-darker.yaml](./4-darker.yaml) application
     ```bash
     # Deploy oauth2-proxy
     kubectl apply -f 4-oauth2-proxy-oidc.yaml && \

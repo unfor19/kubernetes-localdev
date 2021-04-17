@@ -58,14 +58,15 @@ kind: Ingress
 metadata:
   name: dark
   annotations:
+    cert-manager.io/cluster-issuer: tls-ca-issuer # https://cert-manager.io/docs/usage/ingress/
     nginx.ingress.kubernetes.io/auth-url: https://auth.kubemaster.me/oauth2/auth
     nginx.ingress.kubernetes.io/auth-signin: https://auth.kubemaster.me/oauth2/start?rd=https://$host$escaped_request_uri
-    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, X-Auth-Request-User, X-Auth-Request-Email, X-Auth-Request-Preferred-Username, X-Auth-Request-Access-Token"    
+    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, X-Auth-Request-User, X-Auth-Request-Email, X-Auth-Request-Preferred-Username, X-Auth-Request-Access-Token"        
 spec:
   tls:
   - hosts:
     - dark.kubemaster.me
-    secretName: kubemaster-me-app-tls-secret
+    secretName: dark-tls-secret
   ingressClassName: nginx
   rules:
     - host: dark.kubemaster.me

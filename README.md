@@ -140,29 +140,49 @@ Expand/Collapse
 <summary>Expand/Collapse</summary>
 
 1. **Windows**: Windows version [1903 with build 18362 and above](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-2---check-requirements-for-running-wsl-2), hit WINKEY+R and run `winver`
-1. **Windows**: [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/)
 1. **Windows**: [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) - Windows Subsystem Linux running on [Ubuntu 20.04](https://www.microsoft.com/en-il/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1#activetab=pivot:overviewtab)
+1. **Windows**: [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/) - Use [WSL2 backend](https://docs.docker.com/docker-for-windows/wsl/)
 1. **Windows**: [VSCode](https://code.visualstudio.com/download) and [the Remote - WSL extension](https://code.visualstudio.com/blogs/2019/09/03/wsl2)
-1. **Windows**: [choco](https://docs.chocolatey.org/en-us/choco/setup) - Windows package manager
+1. **Windows**: [mkcert](https://github.com/FiloSottile/mkcert) - mkcert is a simple tool for making locally-trusted development certificates. It requires no configuration. Open a new PowerShell window as Administrator (elevated)
+   ```
+   $WebClient = New-Object System.Net.WebClient; if ($?) { $WebClient.DownloadFile("https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-windows-amd64.exe", "c:\windows\system32\mkcert.exe")}
+   ```
+
    ```bash
-   # PowerShell as Administrator (elevated)
-   Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+   # Verify installation
+   mkcert -version
+   # Valid output:
+   # v1.4.3
    ```
-1. **Windows**: [mkcert](https://github.com/FiloSottile/mkcert) - mkcert is a simple tool for making locally-trusted development certificates. It requires no configuration.
+
+5. **Windows**: [LENS 4.2.0](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on Windows](https://github.com/lensapp/lens/releases/download/v4.2.0/Lens-Setup-4.2.0.exe)   
+6. **WSL2**: [minikube](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run Kubernetes locally
    ```
-   choco install mkcert
+   curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
+   sudo install minikube-linux-amd64 /usr/local/bin/minikube
    ```
-1. **Windows**: [LENS 4.2.0](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on Windows](https://github.com/lensapp/lens/releases/download/v4.2.0/Lens-Setup-4.2.0.exe)   
-1. **WSL2**: [minikube](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run Kubernetes locally
+
+   ```bash
+   # Verify Installation
+   minikube version
+   # Valid output:
+   # minikube version: v1.18.1
+   # commit: 09ee84d530de4a92f00f1c5dbc34cead092b95bc
    ```
-    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
-    sudo install minikube-linux-amd64 /usr/local/bin/minikube
-   ```
-1. **WSL2**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
+7. **WSL2**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
     ```bash
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && \
     chmod 700 get_helm.sh && \
     ./get_helm.sh
+    ```
+
+    ```bash
+    helm version
+    # Valid output:
+    # version.BuildInfo{Version:"v3.5.3",
+    # GitCommit:"041ce5a2c17a58be0fcd5f5e16fb3e7e95fea622",
+    # GitTreeState:"dirty"
+    # GoVersion:"go1.15.8"}
     ```
 
 </details>

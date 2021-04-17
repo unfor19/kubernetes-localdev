@@ -17,7 +17,7 @@ Throughout this self-paced course, you'll gain hands-on experience with:
 
 ## Asynchronous Support And Discussions <!-- omit in toc -->
 
-If you have any question, suggestion, idea, or even if you just want to show and tell about your work, feel free to create a discussion in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions).
+If you have any questions, suggestions, ideas, or even if you want to show and tell about your work, feel free to create a discussion in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions).
 
 ## Table Of Contents <!-- omit in toc -->
 
@@ -41,6 +41,7 @@ Expand/Collapse
 - [HTTPS](#https)
   - [Create A Certificate Authority (CA) Certificate And Key](#create-a-certificate-authority-ca-certificate-and-key)
   - [Load CA Certificates To A Kubernetes Secret](#load-ca-certificates-to-a-kubernetes-secret)
+  - [Why Do I Need Cert-Manager?](#why-do-i-need-cert-manager)
   - [Install Cert-Manager And Issue A Self-Signed Certificate](#install-cert-manager-and-issue-a-self-signed-certificate)
 - [Authentication - OAuth2](#authentication---oauth2)
   - [Create Google's Credentials](#create-googles-credentials)
@@ -223,7 +224,7 @@ Expand/Collapse
 
 ## Enable secured HTTPS access from Host to minikube
 
-The term **Host** refers to your machine (macOS/Windows). In this section we're going to install CA certificates on the Host machine (macOS/Windows)
+The term **Host** refers to your machine (macOS/Windows). In this section, we're going to install CA certificates on the Host machine (macOS/Windows)
 
 ### macOS <!-- omit in toc -->
 
@@ -241,7 +242,7 @@ The term **Host** refers to your machine (macOS/Windows). In this section we're 
 
    ![macos-set-cert-trusted](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-set-cert-trusted.png)
 
-   Close that window, you'll be prompted to insert your login password. Following that, execute the following command to print minikube's endpoint url
+   Close that window; you'll be prompted to insert your login password. Following that, execute the following command to print minikube's endpoint URL
 
    ```bash
    echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
@@ -314,7 +315,7 @@ The main reasons why we deploy a [Kubernetes Ingress Controller](https://kuberne
 1. A single endpoint that is exposed to the Host (macOS/Windows) and routes traffic to relevant services (apps)
 1. Integrated HTTPS TLS termination, when appropriately configured 😉
 
-An ingress controller is especially useful for exposing multiple services on the same set of ports (e.g., 80, 443). That is also a good practice for production environments where you hide your services in a private network and allow traffic only from a known external endpoint, such as a load balancer.
+An ingress controller is handy for exposing multiple services on the same set of ports (e.g., 80, 443). That is also a good practice for production environments where you hide your services in a private network and allow traffic only from a known external endpoint, such as a load balancer.
 
 In this project, I chose to implement a Kubernetes Ingress Controller with [NGINX's Ingress Controller](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx). A great alternative is [Traefik](https://github.com/traefik/traefik-helm-chart), though NGINX is probably the most popular.
 
@@ -333,11 +334,11 @@ Helm is Kubernetes's package manager, which is similar to Python's package manag
 
 > Helm uses a packaging format called **charts**. A chart is a collection of files that describe a related set of Kubernetes resources. A single chart might be used to deploy something simple, like a memcached pod, or something complex, like a full web app stack with HTTP servers, databases, caches, and so on. [Source](https://helm.sh/docs/topics/charts/#:~:text=Helm%20uses%20a%20packaging%20format,%2C%20caches%2C%20and%20so%20on.)
 
-A chart usually contains a default set of values, those values are defined in the [values.yaml](https://helm.sh/docs/topics/charts/#values-files) of the Helm chart.
+A chart usually contains a default set of values, and those values are defined in the [values.yaml](https://helm.sh/docs/topics/charts/#values-files) of the Helm chart.
 
-For the sake of simplicity, when installing the NGINX's Helm Chart I used the argument `--set controller.kind=DaemonSet` to override the default value `controller.kind=Deployment`. Choosing the [Kubernetes DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) kind means that NGINX's [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/) are deployed to all [Kubernetes Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/). I chose this setup for enabling High-Availability when adding more nodes to the cluster. High-Availability is probably irrelevant on a local development environment, but it surely helped me cover some core Kubernetes components. NGINX's default deployment kind is a [Kubernetes Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) with a single replica. All default attributes can be seen in NGINX's Helm chart [values.yaml](https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml#L145-L147) file.
+For the sake of simplicity, when installing the NGINX's Helm Chart, I used the argument `--set controller.kind=DaemonSet` to override the default value `controller.kind=Deployment`. Choosing the [Kubernetes DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) kind means that NGINX's [Kubernetes Pods](https://kubernetes.io/docs/concepts/workloads/pods/) are deployed to all [Kubernetes Nodes](https://kubernetes.io/docs/concepts/architecture/nodes/). I chose this setup for enabling High-Availability when adding more nodes to the cluster. High-Availability is probably irrelevant in a local development environment, but it undoubtedly helped me cover some core Kubernetes components. NGINX's default deployment kind is a [Kubernetes Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) with a single replica. To see the default values check NGINX's Helm chart [values.yaml](https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml#L145-L147) file.
 
-Another option for overriding the default values is to use a user-defined `values.yaml` file, which is a modified version of the original [values.yaml](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/charts/ingress-nginx/values.yaml) file.
+Another option for overriding the default values is to use a user-defined `values.yaml` file, a modified version of the original [values.yaml](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/charts/ingress-nginx/values.yaml) file.
 
 1. **macOS/WSL2**: Copy the [values.yaml](https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/charts/ingress-nginx/values.yaml) file from the Chart's repository to your local machine
     ```bash
@@ -419,7 +420,9 @@ Create a local [Certificate Authority](https://en.wikipedia.org/wiki/Certificate
 
 ### Create A Certificate Authority (CA) Certificate And Key
 
-We're going to use [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) for issuing HTTPS/TLS certificates. Before we can do that, we need to create a Certificate Authority Certificate (`rootCA.pem`) and a Certificate Authority Key (`rootCA-key.pem`), see [the difference between the two](https://superuser.com/questions/620121/what-is-the-difference-between-a-certificate-and-a-key-with-respect-to-ssl/620124#620124). You can easily generate a CA certificate and key with [mkcert](https://github.com/FiloSottile/mkcert), that will also install both of them. **There's no need** to search for `.crt` files and install them.
+We're going to use [cert-manager](https://cert-manager.io/docs/installation/kubernetes/) for issuing HTTPS/TLS certificates. Before we can do that, we need to create a Certificate Authority Certificate (`rootCA.pem`) and a Certificate Authority Key (`rootCA-key.pem`). Check out the [the difference between the two](https://superuser.com/questions/620121/what-is-the-difference-between-a-certificate-and-a-key-with-respect-to-ssl/620124#620124). 
+
+You can quickly generate a CA certificate and key with [mkcert](https://github.com/FiloSottile/mkcert), which will also install both of them. **There's no need** to search for `.crt` files and install them.
 
 #### macOS <!-- omit in toc -->
 
@@ -436,7 +439,7 @@ We're going to use [cert-manager](https://cert-manager.io/docs/installation/kube
     ```
 2. **macOS**: Verify Installed Certificates
     1. Hit CMD+SPACE > Run `Keychain Access`
-    2. The end result should be as below
+    2. The result should be as below
 
     ![mkcert-certificate-installed](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-mkcert-installed-cert.png)
 
@@ -492,7 +495,7 @@ We'll create a [Kubernetes Namespace](https://kubernetes.io/docs/concepts/overvi
 
 <summary>Expand/Collapse</summary>
 
-So far, the certificates are recognized by the Windows machine. Now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the windows host. That will make the certificates available in WSL2.
+So far, the certificates are recognized by the Windows machine. Now it's time to create a [symlink](https://linuxize.com/post/how-to-create-symbolic-links-in-linux-using-the-ln-command/) (shortcut) from WSL2 to the Windows Host. That will make the certificates available in WSL2.
 
 Following that, we'll create a [Kubernetes Namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/) and name it `cert-manager`. That is where all cert-manager's resources (Kubernetes Objects) will be deployed (next section). The last step is to create a [Kubernetes Secret type TLS](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets) which cert-manager will use to issue certificates.
 
@@ -527,9 +530,41 @@ Following that, we'll create a [Kubernetes Namespace](https://kubernetes.io/docs
 
 </details>
 
+### Why Do I Need Cert-Manager?
+
+We're using [cert-manager](https://cert-manager.io/docs/) to issue TLS certificates per Ingress automatically. Adding the annotation [cert-manager.io/cluster-issuer](https://cert-manager.io/docs/usage/ingress/) to the Ingress triggers the following process:
+
+1. cert-manager spotted an ingress with the `cert-manager.io/cluster-issuer` annotation
+2. cert-manager checks if the `cluster-issuer` exists and aborts if it doesn't
+3. cert-manager checks if the ingress includes `spec.tls[].secretName`
+   - Secret **exists** - aborts since it's a one-to-one relationship between a Kubernetes Ingress and a Kubernetes Secret when using the `cluster-issuer` annotation
+   - Secret **doesn't** exists - creates a secret in the Ingress's namespace. The secret's data is generated according to `spec.tls[].hosts[]` and the provided ClusterIssuer.
+
+You can also create a [Certificate](https://cert-manager.io/docs/concepts/certificate/) (Kubernetes TLS Secret) and set its `spec.dnsNames[]` to `*.kubemaster.me`, that will enable multiple ingresses to use the same `secretName`. The downside of manually managing Certificates is that you have to create a Certificate per Kubernetes Namespace.
+
+That is where the `cluster-issuer` annotation shines since it's "namespace independent". The Kubernetes Secret is created in the Ingress's namespace **automatically**.
+
+Here's the snippet of [2-green.yaml](./2-green.yaml)'s Kubernetes Ingress
+
+```yaml
+apiVersion: networking.k8s.io/v1beta1 # NGINX Ingress Controller supports this version
+kind: Ingress
+metadata:
+  name: green
+  annotations:
+    cert-manager.io/cluster-issuer: tls-ca-issuer # We'll be created in the next section
+spec:
+  tls:
+  - hosts:
+    - green.kubemaster.me
+    secretName: green-tls-secret # Unique per ingress
+```    
+
 ### Install Cert-Manager And Issue A Self-Signed Certificate
 
-Finally, we're going to deploy cert-manager with Helm and then create cert-manager's [custom resource definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), one of them is the [ClusterIssuer](https://docs.cert-manager.io/en/release-0.11/reference/clusterissuers.html). The [Certificate CRD](https://docs.cert-manager.io/en/release-0.11/reference/certificates.html) communicates with the ClusterIssuer to generate a Kubernetes TLS Secret. Eventually, the NGINX Ingress controller will use the created Kubernetes TLS Secret to [terminate TLS connections](https://kubernetes.github.io/ingress-nginx/examples/tls-termination/) (HTTPS --> HTTP).
+We're going to create cert-manager's [custom resource definitions (CRDs)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), and then deploy cert-manager with Helm. Following that, we'll create the previously mentioned [ClusterIssuer](https://docs.cert-manager.io/en/release-0.11/reference/clusterissuers.html).
+
+Eventually, the NGINX Ingress controller will use the generated Kubernetes TLS Secret to [terminate TLS connections](https://kubernetes.github.io/ingress-nginx/examples/tls-termination/) (HTTPS --> HTTP).
 
 1. **macOS/WSL2**: Add cert-manager to the Helm's repo, create cert-manager's CRDs and deploy cert-manager.
     ```bash
@@ -538,18 +573,16 @@ Finally, we're going to deploy cert-manager with Helm and then create cert-manag
     kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
     helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```
-1. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the Troubleshooting section if you experience any issues
-1. **macOS/WSL2**: Create a ClusterIssuer, Certificate and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
+
+2. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the [Troubleshooting][#Troubleshooting] section if you experience any issues
+3. **macOS/WSL2**: Create the [cert-manager/clusterissuer.yaml](./cert-manager/clusterissuer.yaml) and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses
     kubectl apply -f cert-manager/clusterissuer.yaml && \
-    # Create a TLS Certificate for `kubemaster.me` and `*.kubemaster.me` (or specific sub-domains). 
-    # IMPORTANT: This step is done once, there's no need to create more certificates since all of the sub-domains are covered in the same certficiate
-    kubectl apply -f 2-certificate.yaml && \
-     # Deploy sample app
+    # Deploy sample app
     kubectl apply -f 2-green.yaml
     ```
-1. **macOS/Windows**: Check connectivity to the deployed `green` app, open browser, and navigate to https://green.kubemaster.me (port 443). You should see a cat in a green scenery
+4. **macOS/Windows**: Check connectivity to the deployed `green` app, open browser, and navigate to https://green.kubemaster.me (port 443). You should see a cat in a green scenery
 
     ![results-baby-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-green-cat.png)
 
@@ -837,11 +870,11 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 
 ## Docker Daemon And Minikube
 
-We're running two [Docker Daemons](https://docs.docker.com/get-started/overview/#the-docker-daemon), the first one runs on the Host machine (macOS/Windows) and the second one runs in minikube's [Docker Container](https://www.docker.com/resources/what-container). I find it very hard to understand this architecture, so I've created a diagram to visualize it.
+We're running two [Docker Daemons](https://docs.docker.com/get-started/overview/#the-docker-daemon), the first one runs on the Host machine (macOS/Windows), and the second one runs in minikube's [Docker Container](https://www.docker.com/resources/what-container). I find it very hard to understand this architecture, so I've created a diagram to visualize it.
 
 ![kubernetes-localdev-minikube-dockerd](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-minikube-dockerd.png?dummy=null2)
 
-Let's run some commands to see if it makes sense
+Let's run some commands to see if it makes sense.
 
 1. **macOS/WSL2**: Print the list of the running containers on the **Host** machine
    ```bash
@@ -874,12 +907,12 @@ Let's run some commands to see if it makes sense
 
 Remember the section [Create a Kubernetes Cluster](#create-a-kubernetes-cluster)? We used the argument `--driver=docker`, which instructs minikube to use its [docker driver](https://minikube.sigs.k8s.io/docs/drivers/docker/). From the Kubernetes perspective, it's equivalent for choosing the [Docker runtime](https://www.docker.com/products/container-runtime#:~:text=Docker%20Engine%20is%20the%20industry's,and%20Windows%20Server%20operating%20systems.) as the [Container runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes/). Eventually, this means that [Kubernetes Workloads](https://kubernetes.io/docs/concepts/workloads/) will run as Docker Containers.
 
-As you can see from the last step, minikube's Docker Daemon runs containers that belong to the [Kubernetes Cluster](https://kubernetes.io/docs/concepts/architecture/). The Kubernetes object that represents a group of containers, or a single container, is called a [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/). If you're already familiar with [Docker Compose](https://docs.docker.com/compose/), then writing a [Pod's YAML configuration](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/#pods-created-via-http) is quite similar to writing a [docker-compose.yaml](https://docs.docker.com/compose/gettingstarted/#step-3-define-services-in-a-compose-file) file.
+As you can see from the last step, minikube's Docker Daemon runs containers that belong to the [Kubernetes Cluster](https://kubernetes.io/docs/concepts/architecture/). The Kubernetes object representing a group of containers, or a single container, is called a [Kubernetes Pod](https://kubernetes.io/docs/concepts/workloads/pods/). If you're already familiar with [Docker Compose](https://docs.docker.com/compose/), then writing a [Pod's YAML configuration](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/#pods-created-via-http) is quite similar to writing a [docker-compose.yaml](https://docs.docker.com/compose/gettingstarted/#step-3-define-services-in-a-compose-file) file.
 
 
 ### Curl The Docker Daemons <!-- omit in toc -->
 
-If you think about it, the Docker CLI sends API requests to the [Docker Engine API](https://docs.docker.com/engine/api/v1.41/) which is part of the Docker Daemon. Let's do a quick test to see if we can [curl](https://curl.se/) the Host's (macOS/Windows) Docker Daemon and minikube's Docker Daemon.
+If you think about it, the Docker CLI sends API requests to the [Docker Engine API](https://docs.docker.com/engine/api/v1.41/), which is part of the Docker Daemon. Let's do a quick test to see if we can [curl](https://curl.se/) the Host's (macOS/Windows) Docker Daemon and minikube's Docker Daemon.
 
 1. **macOS/WSL2**: curl the [info](https://docs.docker.com/engine/api/v1.41/#operation/SystemInfo) endpoint of the **Host's** Docker Daemon
    ```bash
@@ -895,14 +928,13 @@ If you think about it, the Docker CLI sends API requests to the [Docker Engine A
    https://127.0.0.1:$(minikube docker-env | grep DOCKER_HOST | cut -d":" -f3 | cut -d'"' -f1)/info
    ```
 
-
-I haven't added the expected output since it's too long and can vary a lot between different Hosts. Search the attribute `Name` in the output, for example, on **WSL2** it's `docker-desktop` (Host) and `minikube`.
+I haven't added the expected output since it's too long and can vary significantly between different Hosts. Search the attribute `Name` in the output; for example, on **WSL2**, it's `docker-desktop` (Host) and `minikube`.
 
 ---
 
 ## Local Development (CI) And Deployment (CD)
 
-Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). I ended up with the more straightforward solution - using minikube's Docker Daemon, instead of the Host's (macOS/Windows) Docker Daemon for building Docker images.
+Initially, I've tried using a private local Docker repository, which was a nightmare (see my [StackOverflow question](https://stackoverflow.com/questions/67020152/docker-local-private-registry-in-minikube-using-the-docker-driver)). A more straightforward solution - using minikube's Docker Daemon, instead of the Host's (macOS/Windows) Docker Daemon for building Docker images.
 
 ### Build The Application (CI)
 
@@ -957,11 +989,11 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 
 ## Troubleshooting
 
-1. **Ingress**: Make sure you expose the cluster to the host with `minikube tunnel` before trying to access the application with the browser
+1. ** Ingress**: Make sure you expose the cluster to the Host with `minikube tunnel` before trying to access the application with the browser
     - ERR_CONNECTION_REFUSED
         ![troubleshooting-err-connection-refused](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-err-connection-refused.png)
-1. **Ingress**: Path-based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.html` is successful, but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. It's best to use Path-based ingresses for serving APIs, for example, `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) Host-based ingresses for serving static pages, just like I did in this project.
-1. **Ingress**: version deprecation warning - ignore this warning; this is the latest version supported by the NGINX Ingress Controller
+1. ** Ingress**: Path-based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.html` is successful, but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. It's best to use Path-based ingresses for serving APIs, for example, `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) Host-based ingresses for serving static pages, just like I did in this project.
+1. ** Ingress**: version deprecation warning - ignore this warning; this is the latest version supported by the NGINX Ingress Controller
     ```bash
     Warning: networking.k8s.io/v1beta1 Ingress is deprecated in v1.19+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
     ```

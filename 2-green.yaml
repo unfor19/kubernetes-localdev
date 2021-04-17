@@ -52,11 +52,13 @@ apiVersion: networking.k8s.io/v1beta1 # NGINX Ingress Controller supports this v
 kind: Ingress
 metadata:
   name: green
+  annotations:
+    cert-manager.io/cluster-issuer: tls-ca-issuer # https://cert-manager.io/docs/usage/ingress/
 spec:
   tls:
   - hosts:
     - green.kubemaster.me
-    secretName: kubemaster-me-app-tls-secret
+    secretName: green-tls-secret
   ingressClassName: nginx
   rules:
     - host: green.kubemaster.me

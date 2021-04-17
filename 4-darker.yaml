@@ -60,6 +60,7 @@ kind: Ingress
 metadata:
   name: darker
   annotations:
+    cert-manager.io/cluster-issuer: tls-ca-issuer # https://cert-manager.io/docs/usage/ingress/  
     nginx.ingress.kubernetes.io/auth-url: https://oidc.kubemaster.me/oauth2/auth
     nginx.ingress.kubernetes.io/auth-signin: https://oidc.kubemaster.me/oauth2/start?rd=https://$host$escaped_request_uri
     nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, X-Auth-Request-User, X-Auth-Request-Email, X-Auth-Request-Preferred-Username, X-Auth-Request-Access-Token"
@@ -67,7 +68,7 @@ spec:
   tls:
   - hosts:
     - darker.kubemaster.me
-    secretName: kubemaster-me-app-tls-secret
+    secretName: darker-tls-secret
   ingressClassName: nginx
   rules:
     - host: darker.kubemaster.me

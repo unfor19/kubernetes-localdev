@@ -351,7 +351,7 @@ Another option for overriding the default values is to use a user-defined `value
 3. Install the helm chart and add the argument `-f values.yaml`
     ```bash
     # There's no need to execute this command as we already did it in the previous section with `--set`
-    helm upgrade --install --wait nginx ingress-nginx/ingress-nginx -f values.yaml
+    helm upgrade --install nginx ingress-nginx/ingress-nginx -f values.yaml
     ```
 
 ---

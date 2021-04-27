@@ -1035,6 +1035,13 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 - [minikube docker driver](https://minikube.sigs.k8s.io/docs/drivers/docker/)
 - [GitLab - Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/)
 
+### Related Blog Posts <!-- omit in toc -->
+
+- [Docker Tips And Best Practices](https://meirg.co.il/2021/02/11/docker-tips-and-best-practices/)
+- [Troubleshooting the right way](https://meirg.co.il/2021/01/23/troubleshooting-the-right-way/)
+- [Boosting terminal productivity tips](https://meirg.co.il/2021/01/18/boosting-terminal-productivity-tips/)
+- [Parsing Command Line Arguments In Bash](https://meirg.co.il/2020/07/24/parsing-command-line-arguments-in-bash/)
+
 ### Images <!-- omit in toc -->
 
 #### Cats Images <!-- omit in toc -->

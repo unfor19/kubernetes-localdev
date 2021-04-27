@@ -1039,9 +1039,9 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 
 #### Cats Images <!-- omit in toc -->
 
-- baby.jpg - source https://www.findcatnames.com/great-black-cat-names/ - [img](https://t9b8t3v6.rocketcdn.me/wp-content/uploads/2014/10/black-cat-and-moon.jpg)
+- baby.jpg - source https://www.maxpixel.net/Animals-Stone-Kitten-Cats-Cat-Flower-Pet-Flowers-2536662
 - green.jpg - source http://challengethestorm.org/cat-taught-love/ - [img](http://challengethestorm.org/wp-content/uploads/2017/03/cat-2083492_700x426.jpg)
-- dark.jpg - source https://www.maxpixel.net/Animals-Stone-Kitten-Cats-Cat-Flower-Pet-Flowers-2536662
+- dark.jpg - source https://www.findcatnames.com/great-black-cat-names/ - [img](https://t9b8t3v6.rocketcdn.me/wp-content/uploads/2014/10/black-cat-and-moon.jpg)
 
 #### Cover Photo Images <!-- omit in toc -->
 

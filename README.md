@@ -36,7 +36,7 @@ Expand/Collapse
 - [Configure LENS](#configure-lens)
 - [NGINX Ingress Controller](#nginx-ingress-controller)
 - [A Few Words About Helm](#a-few-words-about-helm)
-- [Support DNS resolution in Host (macOS/Windows)](#support-dns-resolution-in-host-macoswindows)
+- [Support DNS resolution in Host](#support-dns-resolution-in-host)
 - [HTTP](#http)
 - [HTTPS](#https)
   - [Create A Certificate Authority (CA) Certificate And Key](#create-a-certificate-authority-ca-certificate-and-key)
@@ -140,7 +140,7 @@ Expand/Collapse
 
 <summary>Expand/Collapse</summary>
 
-1. **Windows**: Windows version [1903 with build 18362 and above](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-2---check-requirements-for-running-wsl-2), hit WINKEY+R and run `winver`
+1. **Windows**: Windows version [1903 with build 18362 and above](https://docs.microsoft.com/en-us/windows/wsl/install-win10#step-2---check-requirements-for-running-wsl-2) (including [Version 20H2](https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-version-20h2#:~:text=As%20with%20previous%20fall%20releases,enterprise%20features%2C%20and%20quality%20enhancements.)), hit WINKEY+R and run `winver` to check
 1. **Windows**: [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) - Windows Subsystem Linux running on [Ubuntu 20.04](https://www.microsoft.com/en-il/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1#activetab=pivot:overviewtab)
 1. **Windows**: [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/) - Use [WSL2 backend](https://docs.docker.com/docker-for-windows/wsl/)
 1. **Windows**: [VSCode](https://code.visualstudio.com/download) and [the Remote - WSL extension](https://code.visualstudio.com/blogs/2019/09/03/wsl2)
@@ -357,7 +357,7 @@ Another option for overriding the default values is to use a user-defined `value
 
 ---
 
-## Support DNS resolution in Host (macOS/Windows)
+## Support DNS resolution in Host
 
 To access the NGINX Ingress Controller from the Host machine (macOS/Windows), we need to map its domain name to `127.0.0.1`, which will listen to ports 80 and 443.
 
@@ -574,7 +574,7 @@ Eventually, the NGINX Ingress controller will use the generated Kubernetes TLS S
     helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
     ```
 
-2. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the [Troubleshooting][#Troubleshooting] section if you experience any issues
+2. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the [Troubleshooting](#troubleshooting) section if you experience any issues
 3. **macOS/WSL2**: Create the [cert-manager/clusterissuer.yaml](./cert-manager/clusterissuer.yaml) and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash
     # This issuer uses the TLS secret `kubemaster-me-ca-tls-secret` to create certificates for the ingresses

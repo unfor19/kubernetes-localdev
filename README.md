@@ -54,10 +54,10 @@ Expand/Collapse
 - [Local Development (CI) And Deployment (CD)](#local-development-ci-and-deployment-cd)
   - [Build The Application (CI)](#build-the-application-ci)
   - [Deploy The Application (CD)](#deploy-the-application-cd)
+- [Challenges (Exercises)](#challenges-exercises)
 - [Cleanup](#cleanup)
 - [Troubleshooting](#troubleshooting)
 - [References](#references)
-- [Future Work](#future-work)
 - [Authors](#authors)
 - [License](#license)
 
@@ -966,6 +966,21 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 
 ---
 
+## Challenges (Exercises)
+
+**Work In Progress (WIP)**
+
+This is the first and last time you'll see the word `exercise` in this repository. From now on I'll refer to it as a `challenge`.
+
+I've added the [challenges](./challenges) directory, which currently, contains a single challenge - [Earn Makefile](./challenges/README.md).
+
+Upon completing this challenge, you'll earn a Makefile that is related to this repository.
+
+Feel free to post your feedback in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions). I'll add more challenges, according to your feedback (yes, **your** feedback).
+
+
+---
+
 ## Cleanup
 
 **IMPORTANT**: Quit LENS before proceeding
@@ -1060,14 +1075,6 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 - OAuth2 Proxy - https://oauth2-proxy.github.io/oauth2-proxy/
 - minikube - https://minikube.sigs.k8s.io/docs/
 
-
-## Future Work
-
-1. How to create and manage Kubernetes Secrets with [HashiCorp's Vault](https://www.vaultproject.io/)
-1. How to add more nodes
-    ```bash
-    minikube node add --worker=true
-    ```
 
 ## Authors
 

@@ -12,9 +12,9 @@ Willy Wonka, a junior DevOps enginner, protected his [Makefile](https://en.wikip
 
 ### Challenge
 
-Find a way to read Willy's Makefile, so it will make sense.
+Find a way to read Willy's Makefile so that it will make sense.
 
-The prize is quite nice, Willy wrote a Makefile which is related to this repository.
+The prize is quite lovely, and Willy wrote a Makefile which is related to this repository.
 
 ### Hint
 
@@ -32,7 +32,7 @@ How would you decode a [Kubernetes Secret](https://kubernetes.io/docs/concepts/c
 
 <summary>Expand/Collapse</summary>
 
-The content of [ch1-earn-makefile/earn-me](./ch1-earn-makefile/earn-me) seems like it's encoded with base64. How can I assume that? A "long" string that ends with `==` is usually (not always) the base64 represenation of a normal string. When I see those kind of strings, I attempt to decode them with the built-in command [base64](https://www.gnu.org/software/coreutils/manual/html_node/base64-invocation.html).
+The content of [ch1-earn-makefile/earn-me](./ch1-earn-makefile/earn-me) seems like it's encoded with base64. How can I assume that? A "long" string that ends with `==` is usually (not always) the base64 representation of a normal string. When I see those kinds of strings, I attempt to decode them with the built-in command [base64](https://www.gnu.org/software/coreutils/manual/html_node/base64-invocation.html).
 
 Here's how you can decode the `Makefile` using a one-liner Bash script.
 
@@ -48,10 +48,10 @@ cat Makefile
 CATS_APP_NAME ?= baby
 ...
 clean-minikube:
-	minikube delete --purge --all
+    minikube delete --purge --all
 ```
 
-Use `make help` to check for available commands
+Use `make help` to check for available commands.
 
 ```
 help                 Available make commands
@@ -69,7 +69,7 @@ run-cats             Run docker-cats locally
 
 <summary>Upon completing the challenge - Expand/Collapse</summary>
 
-**Encoding** is nothing more than a different representation of the same thing. Just as `11` in binary is `3` in decimal, you just need to know the base and that's it, there's no protection at all.
+**Encoding** is nothing more than a different representation of the same thing. Just as `11` in binary is `3` in decimal, you need to know the base, and that's it; there's no protection at all.
 
 Willy should've used an **Encryption** mechanism, such as password, private+public keys, etc., to protect his Makefile.
 

@@ -15,9 +15,11 @@ Throughout this self-paced course, you'll gain hands-on experience with:
 - Authenticating users with [Google](https://developers.google.com/identity) as an Identity Provider (IdP), implementing both [OAuth2](https://oauth.net/2/) and [OAuth2+OIDC](https://openid.net/connect/) using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy)
 - Building the webserver application [docker-cats](https://github.com/unfor19/docker-cats) and deploying it to the Kubernetes cluster with [kubectl rollout](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources)
 
-## Asynchronous Support And Discussions <!-- omit in toc -->
+## Updates
 
-If you have any questions, suggestions, ideas, or even if you want to show and tell about your work, feel free to create a discussion in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions).
+- **06-Apr-2021: Asynchronous Support And Discussions**: If you have any questions, suggestions, ideas, or even if you want to show and tell about your work, feel free to create a discussion in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions).
+
+- **04-May-2021: Added Challenges (Exercises)**: That is the first and last time you'll see the word `exercise` in this repository. So from now on, I'll refer to it as a `challenge`. I've added the [challenges](./challenges) directory, which currently, contains two challenges, see [challenges/README.md](./challenges/README.md). Feel free to post your feedback in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions). I'll add more challenges, according to your feedback (yes, **your** feedback).
 
 ## Table Of Contents <!-- omit in toc -->
 
@@ -27,6 +29,7 @@ If you have any questions, suggestions, ideas, or even if you want to show and t
 Expand/Collapse
 </summary>
 
+- [Updates](#updates)
 - [Architecture](#architecture)
 - [Requirements](#requirements)
   - [macOS](#macos)
@@ -54,7 +57,6 @@ Expand/Collapse
 - [Local Development (CI) And Deployment (CD)](#local-development-ci-and-deployment-cd)
   - [Build The Application (CI)](#build-the-application-ci)
   - [Deploy The Application (CD)](#deploy-the-application-cd)
-- [Challenges (Exercises)](#challenges-exercises)
 - [Cleanup](#cleanup)
 - [Troubleshooting](#troubleshooting)
 - [References](#references)
@@ -963,21 +965,6 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
     ```bash
     kubectl rollout restart deployment/baby deployment/green deployment/dark deployment/darker
     ```
-
----
-
-## Challenges (Exercises)
-
-**Work In Progress (WIP)**
-
-This is the first and last time you'll see the word `exercise` in this repository. From now on I'll refer to it as a `challenge`.
-
-I've added the [challenges](./challenges) directory, which currently, contains a single challenge - [Earn Makefile](./challenges/README.md).
-
-Upon completing this challenge, you'll earn a Makefile that is related to this repository.
-
-Feel free to post your feedback in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions). I'll add more challenges, according to your feedback (yes, **your** feedback).
-
 
 ---
 

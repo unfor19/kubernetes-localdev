@@ -1,22 +1,27 @@
-# kubernetes-localdev
+# kubernetes-localdev <!-- omit in toc -->
 
 **Work In Progress (WIP)**
 
 For those who wish to deepen their knowledge, I'll be adding some Hands-on challenges.
 
+## Table Of Contents <!-- omit in toc -->
+
+- [1 - Earn Makefile](#1---earn-makefile)
+- [2 - Change The Image](#2---change-the-image)
+
 ## 1 - Earn Makefile
 
-### Scenario
+### Scenario <!-- omit in toc -->
 
 Willy Wonka, a junior DevOps enginner, protected his [Makefile](https://en.wikipedia.org/wiki/Make_(software)), that is located at [ch1-earn-makefile/earn-me](./ch1-earn-makefile/earn-me).
 
-### Challenge
+### Challenge <!-- omit in toc -->
 
 Find a way to read Willy's Makefile so that it will make sense.
 
 The prize is quite lovely, and Willy wrote a Makefile which is related to this repository.
 
-### Hint
+### Hint <!-- omit in toc -->
 
 <details>
 
@@ -26,7 +31,7 @@ How would you decode a [Kubernetes Secret](https://kubernetes.io/docs/concepts/c
 
 </details>
 
-### Solution
+### Solution <!-- omit in toc -->
 
 <details>
 
@@ -63,7 +68,7 @@ run-cats             Run docker-cats locally
 
 </details>
 
-### Conclusion
+### Conclusion <!-- omit in toc -->
 
 <details>
 
@@ -77,11 +82,11 @@ Willy should've used an **Encryption** mechanism, such as password, private+publ
 
 ## 2 - Change The Image
 
-### Scenario
+### Scenario <!-- omit in toc -->
 
 As part of testing [docker-cats](https://github.com/unfor19/docker-cats), Willy wants to change the image of `baby.jpg` (even though it's adorable). The change should take place immediately, with minimum effort.
 
-### Challenge
+### Challenge <!-- omit in toc -->
 
 Deploy the application [1-baby.yaml](../1-baby.yaml), and then change the image `baby.jpg` to a different one, but keep the same file name `baby.jpg`.
 
@@ -89,7 +94,7 @@ You can use this image - [baby-new.jpg](https://d33vo9sj4p3nyc.cloudfront.net/ku
 
 The main goal is to apply a change of a running application and get immediate feedback.
 
-### Hints
+### Hints <!-- omit in toc -->
 
 <details>
 
@@ -116,7 +121,7 @@ If you're going to use the above command, you'll get the error `"bash": executab
 </details>
 
 
-### Solution
+### Solution <!-- omit in toc -->
 
 <details>
 
@@ -160,7 +165,7 @@ If you're going to use the above command, you'll get the error `"bash": executab
 
 </details>
 
-### Conclusion
+### Conclusion <!-- omit in toc -->
 
 <details>
 

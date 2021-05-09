@@ -108,12 +108,12 @@ It's also possible to [access minikube's Docker Daemon](https://github.com/unfor
 
 <details>
 
-<summary>Get In The Container - Expand/Collapse</summary>
+<summary>Get In The Container/Pod - Expand/Collapse</summary>
 
-First, you need to find the container's name (see the previous hint). Following that, you can execute
+First, you need to find the pod's name (see previous hint). Since we have a single container, there's no need to use `-c $CONTAINER_NAME`. Following that, you can execute
 
 ```bash
-docker exec "$CONTAINER_NAME" -it bash
+kubectl exec -it "$POD_NAME" -- bash
 ```
 
 If you're going to use the above command, you'll get the error `"bash": executable file not found`. Figure out which command can be used to exec into the running container.

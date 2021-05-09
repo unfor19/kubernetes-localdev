@@ -297,6 +297,14 @@ The term **Host** refers to your machine (macOS/Windows). In this section, we're
     ![access-minikube-kubernetes-api-from-windows](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/access-minikube-kubernetes-api-from-windows.png)
 
 
+
+### Why does the Host need HTTPS access to minikube? <!-- omit in toc -->
+
+Upon completing this course, you might ask [Why does the Host need HTTPS access to minikube?](https://github.com/unfor19/kubernetes-localdev/discussions/6#discussioncomment-715080). I've answered this question in the [Dicussions section](https://github.com/unfor19/kubernetes-localdev/discussions/6#discussioncomment-715618).
+
+> "Picture this - You want to access the Kubernetes APIs, from the Host with HTTPS, how would you do that? See [Access Clusters Using the Kubernetes API](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/). All the examples use `HTTP`, while with our setup we can use `HTTPS`, hooray for us  🎉"
+
+
 ---
 
 ## Configure LENS

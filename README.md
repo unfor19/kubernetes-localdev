@@ -519,7 +519,7 @@ Following that, we'll create a [Kubernetes Namespace](https://kubernetes.io/docs
 
     ```bash
     # Create symlink `ln -s`
-    CAROOT_DIR="/mnt/media/caroot" && \
+    CAROOT_DIR="/mnt/caroot" && \
     sudo ln -s "/mnt/c/Users/${HOST_USERNAME}/AppData/Local/mkcert" "$CAROOT_DIR"
     ```
 
@@ -528,7 +528,7 @@ Following that, we'll create a [Kubernetes Namespace](https://kubernetes.io/docs
     ls -l "$CAROOT_DIR" && ls "$CAROOT_DIR"
 
     # Valid Output
-    # lrwxrwxrwx 1 root root 41 Apr 10 13:12 /mnt/media/caroot -> /mnt/c/Users/unfor19/AppData/Local/mkcert
+    # lrwxrwxrwx 1 root root 41 Apr 10 13:12 /mnt/caroot -> /mnt/c/Users/unfor19/AppData/Local/mkcert
     # rootCA-key.pem  rootCA.pem
     ```
 

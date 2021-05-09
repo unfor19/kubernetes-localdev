@@ -864,7 +864,7 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 
         </details>
 
-    ![results-darker-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-darker-cat.png?dummy=null)
+    ![kubernetes-localdev-darker-process](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-darker-process.gif)
 
 ---
 

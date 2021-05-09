@@ -661,7 +661,7 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
     ```
 1. **macOS/Windows**: Open a browser in a new Incognito/Private window and navigate to https://dark.kubemaster.me and login with your Google user. You should see a cat in a dark scenery.
 
-    ![results-dark-cat](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/results-dark-cat.png)
+    ![kubernetes-localdev-dark-process](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/kubernetes-localdev-dark-process.gif)
 
 ---
 

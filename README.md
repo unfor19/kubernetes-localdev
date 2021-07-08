@@ -403,7 +403,7 @@ Deploy the [1-baby.yaml](https://github.com/unfor19/kubernetes-localdev/blob/mas
     ```bash
     kubectl apply -f 1-baby.yaml
     ```
-1. **macOS/WSL2**: Open a **new terminal window** and serve NGINX Ingress Controller on Windows localhost, ports 80 and 443. That will provide the `nginx-ingress-nginx-controller` [Kubernetes Service](https://kubernetes.io/docs/concepts/services-networking/service/) an [External IP](https://kubernetes.io/docs/concepts/services-networking/service/#external-ips) of the Windows host `127.0.0.1`. **Keep it running in the background**
+1. **macOS/WSL2**: Open a **new terminal window** and serve NGINX Ingress Controller on localhost (127.0.0.1), ports 80 and 443. That will provide the `nginx-ingress-nginx-controller` [Kubernetes Service](https://kubernetes.io/docs/concepts/services-networking/service/) an [External IP](https://kubernetes.io/docs/concepts/services-networking/service/#external-ips) of the Windows host `127.0.0.1`. **Keep it running in the background**
     ```bash
     minikube tunnel
     # ❗  The service nginx-ingress-nginx-controller requires privileged ports to be exposed: [80 443]
@@ -562,7 +562,7 @@ kind: Ingress
 metadata:
   name: green
   annotations:
-    cert-manager.io/cluster-issuer: tls-ca-issuer # We'll be created in the next section
+    cert-manager.io/cluster-issuer: tls-ca-issuer # Will be created in the next section
 spec:
   tls:
   - hosts:

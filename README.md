@@ -296,7 +296,7 @@ Upon completing this course, you might ask [Why does the Host need HTTPS access 
 
 > "Picture this - You want to access the Kubernetes APIs, from the Host with HTTPS, how would you do that? See [Access Clusters Using the Kubernetes API](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/). All the examples use `HTTP`, while with our setup we can use `HTTPS`, hooray for us  🎉"
 
-> **IMPORTANT**: In the latest version of minikube, v1.25.1 as of today, 26-Jan-2022, the rootCA is generated for longer than 397 days. To overcome that, use version **1.21.0**.
+> **IMPORTANT**: In the latest version of minikube, v1.25.1 as of today, 26-Jan-2022, the rootCA is generated for [longer than 397 days](https://support.apple.com/en-us/HT211025); To overcome that, use version **1.21.0**.
 
 ---
 

@@ -303,10 +303,10 @@ Upon completing this course, you might ask [Why does the Host need HTTPS access 
 ## Configure LENS
 
 1. **macOS/Windows**: LENS is so smart! Click on the Catalog icon (top left corner) and the `minikube` Kubernetes cluster will appear. LENS recognizes the kubernetes cluster context, according to the `$HOME/.kube/config` file.
-    ![lens-connect-cluster](_image)
+    ![lens-connect-cluster](https://assets.meirg.co.il/kubernetes-localdev/lens-connect-cluster.png)
 
     Select **All namespaces**
-    ![lens-view-pods](_image_)
+    ![lens-view-pods](https://assets.meirg.co.il/kubernetes-localdev/lens-view-pods.png)
  
 ---
 

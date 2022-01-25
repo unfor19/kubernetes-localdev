@@ -103,10 +103,10 @@ Expand/Collapse
    # v1.4.3
    ```
 4. **macOS**: [LENS 5.3.4+](https://k8slens.dev/) - The Kubernetes IDE
-5. **macOS**: [minikube v1.25.1](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run a Kubernetes cluster locally
+5. **macOS**: [minikube v1.21.0](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run a Kubernetes cluster locally
    ```bash
-   curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.25.1/minikube-darwin-amd64
-   # curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.25.1/minikube-darwin-arm64
+   curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.21.0/minikube-darwin-amd64
+   # curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.21.0/minikube-darwin-arm64
    sudo install minikube-bin /usr/local/bin/minikube
    ```
 

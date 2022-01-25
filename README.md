@@ -114,8 +114,8 @@ Expand/Collapse
    # Verify Installation
    minikube version
    # Valid output:
-   # minikube version: v1.25.1
-   # commit: 3e64b11ed75e56e4898ea85f96b2e4af0301f43d
+   # minikube version: v1.21.0
+   # commit: 76d74191d82c47883dc7e1319ef7cebd3e00ee11
    ```
 6. **macOS**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
     ```bash
@@ -232,20 +232,14 @@ The term **Host** refers to your machine (macOS/Windows). In this section, we're
 
 <summary>Expand/Collapse</summary>
 
-1. **macOS**: Install the certificates `ca.crt` and `client.crt` in the [Keychain](https://support.apple.com/en-il/guide/mac-help/mchlf375f392/mac)
+1. **macOS**: Install the rootCA certificate `ca.crt` in the [Keychain](https://support.apple.com/en-il/guide/mac-help/mchlf375f392/mac)
    ```bash
-   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$HOME/.minikube/ca.crt"  && \
-   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$HOME/.minikube/profiles/minikube/client.crt"
-   ```
-
-   Set the client certificate as **Always Trusted**
-
-   ![macos-set-cert-trusted](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-set-cert-trusted.png)
-
-   Close that window; you'll be prompted to insert your login password. Following that, execute the following command to print minikube's endpoint URL
-
+   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$HOME/.minikube/ca.crt"
+   ``` 
+2. **macOS**: Execute the following command to print minikube's endpoint URL
    ```bash
-   echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
+   export MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
+   echo " Open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
    ```
 
 </details>
@@ -302,16 +296,17 @@ Upon completing this course, you might ask [Why does the Host need HTTPS access 
 
 > "Picture this - You want to access the Kubernetes APIs, from the Host with HTTPS, how would you do that? See [Access Clusters Using the Kubernetes API](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/). All the examples use `HTTP`, while with our setup we can use `HTTPS`, hooray for us  🎉"
 
+> **IMPORTANT**: In the latest version of minikube, v1.25.1 as of today, 26-Jan-2022, the rootCA is generated for longer than 397 days. To overcome that, use version **1.21.0**.
 
 ---
 
 ## Configure LENS
 
-1. **macOS/Windows**: Use the KUBECONFIG file in LENS when adding a cluster
-    ![lens-add-cluster](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/lens-add-cluster.png)
+1. **macOS/Windows**: LENS is so smart! Click on the Catalog icon (top left corner) and the `minikube` Kubernetes cluster will appear. LENS recognizes the kubernetes cluster context, according to the `$HOME/.kube/config` file.
+    ![lens-connect-cluster](_image)
 
     Select **All namespaces**
-    ![lens-view-pods](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/lens-view-pods.png)
+    ![lens-view-pods](_image_)
  
 ---
 
@@ -438,19 +433,19 @@ You can quickly generate a CA certificate and key with [mkcert](https://github.c
 
 <summary>Expand/Collapse</summary>
 
-1. **macOS**: In terminal
+1. **macOS**: Install mkcert root certificate
     ```powershell
-    mkcert -install
+    mkcert -install -client 127.0.0.1
     # The local CA is now installed in the system trust store! ⚡️
-    mkcert -CAROOT
+    mkcert -CAROOT # Print CA Location
     # /Users/$HOST_USERNAME/Library/Application Support/mkcert
     ```
-2. **macOS**: Verify Installed Certificates
+1. **macOS**: Verify Installed Certificate
     1. Hit CMD+SPACE > Run `Keychain Access`
     2. The result should be as below
 
     ![mkcert-certificate-installed](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-mkcert-installed-cert.png)
-
+1. **macOS**: 
 
 </details>
 
@@ -460,7 +455,7 @@ You can quickly generate a CA certificate and key with [mkcert](https://github.c
 
 <summary>Expand/Collapse</summary>
 
-1. **Windows**: Open Windows PowerShell as Administrator (elevated)
+1. **Windows**: Install mkcert root certificate - Open Windows PowerShell **as Administrator** (elevated)
     ```powershell
     mkcert -install # Click Yes when prompted
     # The local CA is now installed in the system trust store! ⚡️

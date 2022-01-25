@@ -435,17 +435,17 @@ You can quickly generate a CA certificate and key with [mkcert](https://github.c
 
 1. **macOS**: Install mkcert root certificate
     ```powershell
-    mkcert -install -client 127.0.0.1
+    mkcert -install
     # The local CA is now installed in the system trust store! ⚡️
     mkcert -CAROOT # Print CA Location
     # /Users/$HOST_USERNAME/Library/Application Support/mkcert
     ```
-1. **macOS**: Verify Installed Certificate
+2. **macOS**: Verify Installed Certificate
     1. Hit CMD+SPACE > Run `Keychain Access`
     2. The result should be as below
 
     ![mkcert-certificate-installed](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-mkcert-installed-cert.png)
-1. **macOS**: 
+3. **macOS**: 
 
 </details>
 
@@ -573,10 +573,9 @@ Eventually, the NGINX Ingress controller will use the generated Kubernetes TLS S
     ```bash
     helm repo add jetstack https://charts.jetstack.io              && \
     helm repo update                                               && \
-    kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
-    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
+    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.crds.yaml && \
+    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.6.1
     ```
-
 2. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the [Troubleshooting](#troubleshooting) section if you experience any issues
 3. **macOS/WSL2**: Create the [cert-manager/clusterissuer.yaml](./cert-manager/clusterissuer.yaml) and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash

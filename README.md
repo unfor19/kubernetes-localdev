@@ -645,9 +645,9 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 1. **macOS/WSL2**: Deploy [3-oauth2-proxy.yaml](./3-oauth2-proxy.yaml) and the sample [3-dark.yaml](./3-dark.yaml) application
     ```bash
     # Create a Kubernetes Secret for oauth2-proxy `cookie-secret`
-    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(docker run --rm python:3.9.1-alpine python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')" && \
+    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(docker run --rm python:3.9.1-alpine python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')"
     # Deploy oauth2-proxy
-    kubectl apply -f 3-oauth2-proxy.yaml && \
+    kubectl apply -f 3-oauth2-proxy.yaml
     # Deploy sample app `dark`, served via HTTPS and protected with Google authentication
     kubectl apply -f 3-dark.yaml
     ```

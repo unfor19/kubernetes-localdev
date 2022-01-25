@@ -191,13 +191,14 @@ Expand/Collapse
 
 ## Create a Kubernetes Cluster
 
+1. **macOS**/**WSL2**: Start the Docker daemon on your local machine; The simplest way is to run [Docker For Desktop](https://docs.docker.com/desktop/)
 1. **macOS**/**WSL2**: Create a Kubernetes cluster with minkube
     ```bash
     minikube start --driver=docker --kubernetes-version=v1.21.2
     # ...
     # 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
     ```
-1. **macOS**/**WSL2**: Check connectivity - HTTPS should work since we're using `ca.crt`
+2. **macOS**/**WSL2**: Check connectivity - HTTPS should work since we're using `ca.crt`
     ```bash
     MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
     export MINIKUBE_EXPOSED_PORT=${MINIKUBE_EXPOSED_PORT} && \
@@ -207,15 +208,15 @@ Expand/Collapse
     A valid response
     ```json
     {
-        "major": "1",
-        "minor": "20",
-        "gitVersion": "v1.20.2",
-        "gitCommit": "faecb196815e248d3ecfb03c680a4507229c2a56",
-        "gitTreeState": "clean",
-        "buildDate": "2021-01-13T13:20:00Z",
-        "goVersion": "go1.15.5",
-        "compiler": "gc",
-        "platform": "linux/amd64"
+      "major": "1",
+      "minor": "21",
+      "gitVersion": "v1.21.2",
+      "gitCommit":   "092fbfbf53427de67cac1e9fa54aaa09a28371d7",
+      "gitTreeState": "clean",
+      "buildDate": "2021-06-16T12:53:14Z",
+      "goVersion": "go1.16.5",
+      "compiler": "gc",
+      "platform": "linux/amd64"
     }
     ```
 

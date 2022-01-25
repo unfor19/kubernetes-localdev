@@ -102,20 +102,20 @@ Expand/Collapse
    # Valid output:
    # v1.4.3
    ```
-4. **macOS**: [LENS 4.2.0](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on macOS](https://github.com/lensapp/lens/releases/download/v4.2.0/Lens-4.2.0.dmg)
-5. **macOS**: [minikube](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run Kubernetes locally
+4. **macOS**: [LENS 5.3.4+](https://k8slens.dev/) - The Kubernetes IDE
+5. **macOS**: [minikube v1.25.1](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run a Kubernetes cluster locally
    ```bash
-   curl -L -o minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64" && \
-   chmod +x minikube && \
-   sudo mv minikube /usr/local/bin/minikube
+   curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.25.1/minikube-darwin-amd64
+   # curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.25.1/minikube-darwin-arm64
+   sudo install minikube-bin /usr/local/bin/minikube
    ```
 
    ```bash
    # Verify Installation
    minikube version
    # Valid output:
-   # minikube version: v1.19.0
-   # commit: 15cede53bdc5fe242228853e737333b09d4336b5
+   # minikube version: v1.25.1
+   # commit: 3e64b11ed75e56e4898ea85f96b2e4af0301f43d
    ```
 6. **macOS**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
     ```bash
@@ -128,10 +128,7 @@ Expand/Collapse
     ```bash
     helm version
     # Valid output:
-    # version.BuildInfo{Version:"v3.5.3",
-    # GitCommit:"041ce5a2c17a58be0fcd5f5e16fb3e7e95fea622",
-    # GitTreeState:"dirty"
-    # GoVersion:"go1.15.8"}
+    # version.BuildInfo{Version:"v3.8.0", GitCommit:"d14138609b01886f544b2025f5000351c9eb092e", GitTreeState:"clean", GoVersion:"go1.17.5"}
     ```
 
 </details>
@@ -196,7 +193,7 @@ Expand/Collapse
 
 1. **macOS**/**WSL2**: Create a Kubernetes cluster with minkube
     ```bash
-    minikube start --driver=docker --kubernetes-version=v1.20.2
+    minikube start --driver=docker --kubernetes-version=v1.21.2
     # ...
     # 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
     ```

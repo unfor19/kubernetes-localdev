@@ -991,11 +991,11 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 
 ## Troubleshooting
 
-1. ** Ingress**: Make sure you expose the cluster to the Host with `minikube tunnel` before trying to access the application with the browser
+1. **Ingress**: Make sure you expose the cluster to the Host with `minikube tunnel` before trying to access the application with the browser
     - ERR_CONNECTION_REFUSED
         ![troubleshooting-err-connection-refused](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-err-connection-refused.png)
-1. ** Ingress**: Path-based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.html` is successful, but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. It's best to use Path-based ingresses for serving APIs, for example, `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) Host-based ingresses for serving static pages, just like I did in this project.
-1. ** Ingress**: version deprecation warning - ignore this warning; this is the latest version supported by the NGINX Ingress Controller
+1. **Ingress**: Path-based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.html` is successful, but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. It's best to use Path-based ingresses for serving APIs, for example, `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) Host-based ingresses for serving static pages, just like I did in this project.
+1. **Ingress**: version deprecation warning - ignore this warning; this is the latest version supported by the NGINX Ingress Controller
     ```bash
     Warning: networking.k8s.io/v1beta1 Ingress is deprecated in v1.19+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
     ```

@@ -48,7 +48,7 @@ spec:
     app: cats
     type: green
 ---
-apiVersion: networking.k8s.io/v1 # NGINX Ingress Controller supports this version
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: green

@@ -20,7 +20,7 @@ spec:
             - --provider=oidc # Google in our case
             - --scope=openid profile email
             - --oidc-issuer-url=https://accounts.google.com
-            - --oidc-jwks-url=https://accounts.google.com/.well-known/openid-configuration             
+            - --oidc-jwks-url=https://accounts.google.com/.well-known/openid-configuration
             - --email-domain=* #
             - --http-address=0.0.0.0:4180 # accept from anywhere to port 4180
             - --whitelist-domain=.kubemaster.me # any subdomain
@@ -79,17 +79,18 @@ spec:
   selector:
     k8s-app: oauth2-proxy-oidc
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: oauth2-proxy-oidc
   annotations:
-    cert-manager.io/cluster-issuer: tls-ca-issuer # https://cert-manager.io/docs/usage/ingress/  
+    cert-manager.io/cluster-issuer: tls-ca-issuer # https://cert-manager.io/docs/usage/ingress/
 spec:
   tls:
     - hosts:
         - oidc.kubemaster.me
       secretName: oauth2-proxy-oidc-tls-secret
+  ingressClassName: nginx
   rules:
     - host: oidc.kubemaster.me
       http:
@@ -97,5 +98,7 @@ spec:
           - path: /oauth2
             pathType: Prefix
             backend:
-              serviceName: oauth2-proxy-oidc
-              servicePort: 4180
+              service:
+                name: oauth2-proxy-oidc
+                port:
+                  number: 4180

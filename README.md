@@ -677,7 +677,7 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 1. **macOS/WSL2**: Deploy [4-oauth2-proxy-oidc.yaml](./4-oauth2-proxy-oidc.yaml) and the sample [4-darker.yaml](./4-darker.yaml) application
     ```bash
     # Deploy oauth2-proxy
-    kubectl apply -f 4-oauth2-proxy-oidc.yaml && \
+    kubectl apply -f 4-oauth2-proxy-oidc.yaml
     # Deploy sample app `darker`, served via HTTPS and protected with Google authentication (OIDC)
     kubectl apply -f 4-darker.yaml
     ```

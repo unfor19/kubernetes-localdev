@@ -145,7 +145,7 @@ Expand/Collapse
 1. **Windows**: [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) - Windows Subsystem Linux running on [Ubuntu 20.04](https://www.microsoft.com/en-il/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1#activetab=pivot:overviewtab)
 1. **Windows**: [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/) - Use [WSL2 backend](https://docs.docker.com/docker-for-windows/wsl/)
 1. **Windows**: [VSCode](https://code.visualstudio.com/download) and [the Remote - WSL extension](https://code.visualstudio.com/blogs/2019/09/03/wsl2)
-1. **Windows**: [mkcert](https://github.com/FiloSottile/mkcert) - mkcert is a simple tool for making locally-trusted development certificates. It requires no configuration. Open a new PowerShell window as Administrator (elevated)
+1. **Windows**: [mkcert](https://github.com/FiloSottile/mkcert) - mkcert is a simple tool for making locally-trusted development certificates. It requires no configuration. Open a new **PowerShell** window as Administrator (elevated)
    ```
    $WebClient = New-Object System.Net.WebClient; if ($?) { $WebClient.DownloadFile("https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-windows-amd64.exe", "c:\windows\system32\mkcert.exe")}
    ```
@@ -157,34 +157,33 @@ Expand/Collapse
    # v1.4.3
    ```
 
-5. **Windows**: [LENS 4.2.0](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on Windows](https://github.com/lensapp/lens/releases/download/v4.2.0/Lens-Setup-4.2.0.exe)   
+5. **Windows**: [LENS 5.3.4](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on Windows](https://api.k8slens.dev/binaries/Lens%20Setup%205.3.4-latest.20220120.1.exe)   
 6. **WSL2**: [minikube](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run Kubernetes locally
    ```
-   curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
-   sudo install minikube-linux-amd64 /usr/local/bin/minikube
+   curl -LO https://storage.googleapis.com/minikube/releases/v1.21.0/minikube-linux-amd64 && \
+   sudo install minikube-linux-amd64 /usr/local/bin/minikube && \
+   rm minikube-linux-amd64
    ```
 
    ```bash
    # Verify Installation
    minikube version
    # Valid output:
-   # minikube version: v1.18.1
-   # commit: 09ee84d530de4a92f00f1c5dbc34cead092b95bc
+   # minikube version: v1.21.0
+   # commit: 76d74191d82c47883dc7e1319ef7cebd3e00ee11
    ```
 7. **WSL2**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
     ```bash
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && \
     chmod 700 get_helm.sh && \
-    ./get_helm.sh
+    ./get_helm.sh && \
+    rm get_helm.sh
     ```
 
     ```bash
     helm version
     # Valid output:
-    # version.BuildInfo{Version:"v3.5.3",
-    # GitCommit:"041ce5a2c17a58be0fcd5f5e16fb3e7e95fea622",
-    # GitTreeState:"dirty"
-    # GoVersion:"go1.15.8"}
+    # version.BuildInfo{Version:"v3.8.0", GitCommit:"d14138609b01886f544b2025f5000351c9eb092e", GitTreeState:"clean", GoVersion:"go1.17.5"}
     ```
 
 </details>
@@ -268,12 +267,13 @@ The term **Host** refers to your machine (macOS/Windows). In this section, we're
     ```
 1. **WSL2**: Copy minikube's certificates to Windows host
     ```bash
+    MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
     # Client certificate
     cp  "${HOME}/.minikube/profiles/minikube/client.crt" "${HOME}/.minikube/profiles/minikube/client.key" "${HOME}/.minikube/ca.crt" "/mnt/c/Users/${HOST_USERNAME}/.kube/certs/" && \
     # Prepare URL for Windows
-    echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version" 
+    echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
     ```
-1. **Windows**: Install the certificates `ca.crt` and `client.crt` for the **Current User** in the certificate store **Trusted Root Certification Authorities** (double click both files)
+1. **Windows**: Install the certificate `ca.crt` for the **Current User** in the certificate store **Trusted Root Certification Authorities** (double click both files)
 
     ![minikube-install-certs](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-install-certs.png)
 

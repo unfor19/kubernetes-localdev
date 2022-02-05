@@ -575,8 +575,8 @@ Eventually, the NGINX Ingress controller will use the generated Kubernetes TLS S
     ```bash
     helm repo add jetstack https://charts.jetstack.io              && \
     helm repo update                                               && \
-    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.crds.yaml && \
-    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.6.1
+    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6.2/cert-manager.crds.yaml && \
+    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.6.2
     ```
 2. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the [Troubleshooting](#troubleshooting) section if you experience any issues
 3. **macOS/WSL2**: Create the [cert-manager/clusterissuer.yaml](./cert-manager/clusterissuer.yaml) and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.

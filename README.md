@@ -17,9 +17,11 @@ Throughout this self-paced course, you'll gain hands-on experience with:
 
 ## Updates
 
+- **05-Feb-2022: Updated to Kubernetes v1.21.2**
+- **04-May-2021: Added Challenges (Exercises)**: That is the first and last time you'll see the word `exercise` in this repository. So from now on, I'll refer to it as a `challenge`. I've added the [challenges](./challenges) directory, which currently, contains two challenges, see [challenges/README.md](./challenges/README.md). Feel free to post your feedback in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions). I'll add more challenges, according to your feedback (yes, **your** feedback).
+
 - **06-Apr-2021: Asynchronous Support And Discussions**: If you have any questions, suggestions, ideas, or even if you want to show and tell about your work, feel free to create a discussion in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions).
 
-- **04-May-2021: Added Challenges (Exercises)**: That is the first and last time you'll see the word `exercise` in this repository. So from now on, I'll refer to it as a `challenge`. I've added the [challenges](./challenges) directory, which currently, contains two challenges, see [challenges/README.md](./challenges/README.md). Feel free to post your feedback in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions). I'll add more challenges, according to your feedback (yes, **your** feedback).
 
 ## Table Of Contents <!-- omit in toc -->
 

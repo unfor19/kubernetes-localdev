@@ -48,7 +48,7 @@ spec:
     app: cats
     type: baby
 ---
-apiVersion: networking.k8s.io/v1beta1 # NGINX Ingress Controller supports this version
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: baby
@@ -61,5 +61,7 @@ spec:
           - path: /
             pathType: Prefix
             backend:
-              serviceName: baby
-              servicePort: 80
+              service:
+                name: baby
+                port:
+                  number: 80

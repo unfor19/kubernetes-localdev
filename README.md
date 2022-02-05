@@ -17,9 +17,11 @@ Throughout this self-paced course, you'll gain hands-on experience with:
 
 ## Updates
 
+- **05-Feb-2022: Updated to Kubernetes v1.21.2**
+- **04-May-2021: Added Challenges (Exercises)**: That is the first and last time you'll see the word `exercise` in this repository. So from now on, I'll refer to it as a `challenge`. I've added the [challenges](./challenges) directory, which currently, contains two challenges, see [challenges/README.md](./challenges/README.md). Feel free to post your feedback in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions). I'll add more challenges, according to your feedback (yes, **your** feedback).
+
 - **06-Apr-2021: Asynchronous Support And Discussions**: If you have any questions, suggestions, ideas, or even if you want to show and tell about your work, feel free to create a discussion in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions).
 
-- **04-May-2021: Added Challenges (Exercises)**: That is the first and last time you'll see the word `exercise` in this repository. So from now on, I'll refer to it as a `challenge`. I've added the [challenges](./challenges) directory, which currently, contains two challenges, see [challenges/README.md](./challenges/README.md). Feel free to post your feedback in the [Discussions section](https://github.com/unfor19/kubernetes-localdev/discussions). I'll add more challenges, according to your feedback (yes, **your** feedback).
 
 ## Table Of Contents <!-- omit in toc -->
 
@@ -102,20 +104,20 @@ Expand/Collapse
    # Valid output:
    # v1.4.3
    ```
-4. **macOS**: [LENS 4.2.0](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on macOS](https://github.com/lensapp/lens/releases/download/v4.2.0/Lens-4.2.0.dmg)
-5. **macOS**: [minikube](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run Kubernetes locally
+4. **macOS**: [LENS 5.3.4+](https://k8slens.dev/) - The Kubernetes IDE
+5. **macOS**: [minikube v1.21.0](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run a Kubernetes cluster locally
    ```bash
-   curl -L -o minikube "https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64" && \
-   chmod +x minikube && \
-   sudo mv minikube /usr/local/bin/minikube
+   curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.21.0/minikube-darwin-amd64
+   # curl -o minikube-bin -L https://storage.googleapis.com/minikube/releases/v1.21.0/minikube-darwin-arm64
+   sudo install minikube-bin /usr/local/bin/minikube
    ```
 
    ```bash
    # Verify Installation
    minikube version
    # Valid output:
-   # minikube version: v1.19.0
-   # commit: 15cede53bdc5fe242228853e737333b09d4336b5
+   # minikube version: v1.21.0
+   # commit: 76d74191d82c47883dc7e1319ef7cebd3e00ee11
    ```
 6. **macOS**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
     ```bash
@@ -128,10 +130,7 @@ Expand/Collapse
     ```bash
     helm version
     # Valid output:
-    # version.BuildInfo{Version:"v3.5.3",
-    # GitCommit:"041ce5a2c17a58be0fcd5f5e16fb3e7e95fea622",
-    # GitTreeState:"dirty"
-    # GoVersion:"go1.15.8"}
+    # version.BuildInfo{Version:"v3.8.0", GitCommit:"d14138609b01886f544b2025f5000351c9eb092e", GitTreeState:"clean", GoVersion:"go1.17.5"}
     ```
 
 </details>
@@ -146,7 +145,7 @@ Expand/Collapse
 1. **Windows**: [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) - Windows Subsystem Linux running on [Ubuntu 20.04](https://www.microsoft.com/en-il/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1#activetab=pivot:overviewtab)
 1. **Windows**: [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/install/) - Use [WSL2 backend](https://docs.docker.com/docker-for-windows/wsl/)
 1. **Windows**: [VSCode](https://code.visualstudio.com/download) and [the Remote - WSL extension](https://code.visualstudio.com/blogs/2019/09/03/wsl2)
-1. **Windows**: [mkcert](https://github.com/FiloSottile/mkcert) - mkcert is a simple tool for making locally-trusted development certificates. It requires no configuration. Open a new PowerShell window as Administrator (elevated)
+1. **Windows**: [mkcert](https://github.com/FiloSottile/mkcert) - mkcert is a simple tool for making locally-trusted development certificates. It requires no configuration. Open a new **PowerShell** window as Administrator (elevated)
    ```
    $WebClient = New-Object System.Net.WebClient; if ($?) { $WebClient.DownloadFile("https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-windows-amd64.exe", "c:\windows\system32\mkcert.exe")}
    ```
@@ -158,34 +157,33 @@ Expand/Collapse
    # v1.4.3
    ```
 
-5. **Windows**: [LENS 4.2.0](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on Windows](https://github.com/lensapp/lens/releases/download/v4.2.0/Lens-Setup-4.2.0.exe)   
+5. **Windows**: [LENS 5.3.4](https://k8slens.dev/) - The Kubernetes IDE - [Download and install on Windows](https://api.k8slens.dev/binaries/Lens%20Setup%205.3.4-latest.20220120.1.exe)   
 6. **WSL2**: [minikube](https://minikube.sigs.k8s.io/docs/start/) - a tool that lets you run Kubernetes locally
    ```
-   curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
-   sudo install minikube-linux-amd64 /usr/local/bin/minikube
+   curl -LO https://storage.googleapis.com/minikube/releases/v1.21.0/minikube-linux-amd64 && \
+   sudo install minikube-linux-amd64 /usr/local/bin/minikube && \
+   rm minikube-linux-amd64
    ```
 
    ```bash
    # Verify Installation
    minikube version
    # Valid output:
-   # minikube version: v1.18.1
-   # commit: 09ee84d530de4a92f00f1c5dbc34cead092b95bc
+   # minikube version: v1.21.0
+   # commit: 76d74191d82c47883dc7e1319ef7cebd3e00ee11
    ```
 7. **WSL2**: [Helm v3.x](https://helm.sh/) - the package manager for Kubernetes
     ```bash
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && \
     chmod 700 get_helm.sh && \
-    ./get_helm.sh
+    ./get_helm.sh && \
+    rm get_helm.sh
     ```
 
     ```bash
     helm version
     # Valid output:
-    # version.BuildInfo{Version:"v3.5.3",
-    # GitCommit:"041ce5a2c17a58be0fcd5f5e16fb3e7e95fea622",
-    # GitTreeState:"dirty"
-    # GoVersion:"go1.15.8"}
+    # version.BuildInfo{Version:"v3.8.0", GitCommit:"d14138609b01886f544b2025f5000351c9eb092e", GitTreeState:"clean", GoVersion:"go1.17.5"}
     ```
 
 </details>
@@ -194,13 +192,14 @@ Expand/Collapse
 
 ## Create a Kubernetes Cluster
 
+1. **macOS**/**WSL2**: Start the Docker daemon on your local machine; The simplest way is to run [Docker For Desktop](https://docs.docker.com/desktop/)
 1. **macOS**/**WSL2**: Create a Kubernetes cluster with minkube
     ```bash
-    minikube start --driver=docker --kubernetes-version=v1.20.2
+    minikube start --driver=docker --kubernetes-version=v1.21.2
     # ...
     # 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
     ```
-1. **macOS**/**WSL2**: Check connectivity - HTTPS should work since we're using `ca.crt`
+2. **macOS**/**WSL2**: Check connectivity - HTTPS should work since we're using `ca.crt`
     ```bash
     MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
     export MINIKUBE_EXPOSED_PORT=${MINIKUBE_EXPOSED_PORT} && \
@@ -210,15 +209,15 @@ Expand/Collapse
     A valid response
     ```json
     {
-        "major": "1",
-        "minor": "20",
-        "gitVersion": "v1.20.2",
-        "gitCommit": "faecb196815e248d3ecfb03c680a4507229c2a56",
-        "gitTreeState": "clean",
-        "buildDate": "2021-01-13T13:20:00Z",
-        "goVersion": "go1.15.5",
-        "compiler": "gc",
-        "platform": "linux/amd64"
+      "major": "1",
+      "minor": "21",
+      "gitVersion": "v1.21.2",
+      "gitCommit":   "092fbfbf53427de67cac1e9fa54aaa09a28371d7",
+      "gitTreeState": "clean",
+      "buildDate": "2021-06-16T12:53:14Z",
+      "goVersion": "go1.16.5",
+      "compiler": "gc",
+      "platform": "linux/amd64"
     }
     ```
 
@@ -234,20 +233,14 @@ The term **Host** refers to your machine (macOS/Windows). In this section, we're
 
 <summary>Expand/Collapse</summary>
 
-1. **macOS**: Install the certificates `ca.crt` and `client.crt` in the [Keychain](https://support.apple.com/en-il/guide/mac-help/mchlf375f392/mac)
+1. **macOS**: Install the rootCA certificate `ca.crt` in the [Keychain](https://support.apple.com/en-il/guide/mac-help/mchlf375f392/mac)
    ```bash
-   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$HOME/.minikube/ca.crt"  && \
-   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$HOME/.minikube/profiles/minikube/client.crt"
-   ```
-
-   Set the client certificate as **Always Trusted**
-
-   ![macos-set-cert-trusted](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-set-cert-trusted.png)
-
-   Close that window; you'll be prompted to insert your login password. Following that, execute the following command to print minikube's endpoint URL
-
+   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "$HOME/.minikube/ca.crt"
+   ``` 
+2. **macOS**: Execute the following command to print minikube's endpoint URL
    ```bash
-   echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
+   export MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
+   echo " Open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
    ```
 
 </details>
@@ -274,12 +267,13 @@ The term **Host** refers to your machine (macOS/Windows). In this section, we're
     ```
 1. **WSL2**: Copy minikube's certificates to Windows host
     ```bash
+    MINIKUBE_EXPOSED_PORT="$(kubectl config view -o jsonpath='{.clusters[?(@.name == "minikube")].cluster.server}' | cut -d":" -f3)" && \
     # Client certificate
     cp  "${HOME}/.minikube/profiles/minikube/client.crt" "${HOME}/.minikube/profiles/minikube/client.key" "${HOME}/.minikube/ca.crt" "/mnt/c/Users/${HOST_USERNAME}/.kube/certs/" && \
     # Prepare URL for Windows
-    echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version" 
+    echo "Install the certificates and then open a new browser Incognito/Private window - https://127.0.0.1:${MINIKUBE_EXPOSED_PORT}/version"
     ```
-1. **Windows**: Install the certificates `ca.crt` and `client.crt` for the **Current User** in the certificate store **Trusted Root Certification Authorities** (double click both files)
+1. **Windows**: Install the certificate `ca.crt` for the **Current User** in the certificate store **Trusted Root Certification Authorities** (double click both files)
 
     ![minikube-install-certs](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/minikube-install-certs.png)
 
@@ -304,16 +298,17 @@ Upon completing this course, you might ask [Why does the Host need HTTPS access 
 
 > "Picture this - You want to access the Kubernetes APIs, from the Host with HTTPS, how would you do that? See [Access Clusters Using the Kubernetes API](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/). All the examples use `HTTP`, while with our setup we can use `HTTPS`, hooray for us  🎉"
 
+> **IMPORTANT**: In the latest version of minikube, v1.25.1 as of today, 26-Jan-2022, the rootCA is generated for [longer than 397 days](https://support.apple.com/en-us/HT211025); To overcome that, use version **1.21.0**.
 
 ---
 
 ## Configure LENS
 
-1. **macOS/Windows**: Use the KUBECONFIG file in LENS when adding a cluster
-    ![lens-add-cluster](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/lens-add-cluster.png)
+1. **macOS/Windows**: LENS is so smart! Click on the Catalog icon (top left corner) and the `minikube` Kubernetes cluster will appear. LENS recognizes the kubernetes cluster context, according to the `$HOME/.kube/config` file.
+    ![lens-connect-cluster](https://assets.meirg.co.il/kubernetes-localdev/lens-connect-cluster.png)
 
     Select **All namespaces**
-    ![lens-view-pods](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/lens-view-pods.png)
+    ![lens-view-pods](https://assets.meirg.co.il/kubernetes-localdev/lens-view-pods.png)
  
 ---
 
@@ -440,19 +435,19 @@ You can quickly generate a CA certificate and key with [mkcert](https://github.c
 
 <summary>Expand/Collapse</summary>
 
-1. **macOS**: In terminal
+1. **macOS**: Install mkcert root certificate
     ```powershell
     mkcert -install
     # The local CA is now installed in the system trust store! ⚡️
-    mkcert -CAROOT
+    mkcert -CAROOT # Print CA Location
     # /Users/$HOST_USERNAME/Library/Application Support/mkcert
     ```
-2. **macOS**: Verify Installed Certificates
+2. **macOS**: Verify Installed Certificate
     1. Hit CMD+SPACE > Run `Keychain Access`
     2. The result should be as below
 
     ![mkcert-certificate-installed](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-mkcert-installed-cert.png)
-
+3. **macOS**: 
 
 </details>
 
@@ -462,7 +457,7 @@ You can quickly generate a CA certificate and key with [mkcert](https://github.c
 
 <summary>Expand/Collapse</summary>
 
-1. **Windows**: Open Windows PowerShell as Administrator (elevated)
+1. **Windows**: Install mkcert root certificate - Open Windows PowerShell **as Administrator** (elevated)
     ```powershell
     mkcert -install # Click Yes when prompted
     # The local CA is now installed in the system trust store! ⚡️
@@ -580,10 +575,9 @@ Eventually, the NGINX Ingress controller will use the generated Kubernetes TLS S
     ```bash
     helm repo add jetstack https://charts.jetstack.io              && \
     helm repo update                                               && \
-    kubectl apply -f cert-manager/cert-manager-crds-1.2.0.yaml     && \
-    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0
+    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6.2/cert-manager.crds.yaml && \
+    helm upgrade --install --wait cert-manager jetstack/cert-manager --namespace cert-manager --version v1.6.2
     ```
-
 2. **IMPORTANT**: The ClusterIssuer will fail to create if cert-manager is not ready; see the [Troubleshooting](#troubleshooting) section if you experience any issues
 3. **macOS/WSL2**: Create the [cert-manager/clusterissuer.yaml](./cert-manager/clusterissuer.yaml) and deploy the [2-green.yaml](https://github.com/unfor19/kubernetes-localdev/blob/master/2-green.yaml) application.
     ```bash
@@ -653,9 +647,9 @@ Image Source: https://github.com/oauth2-proxy/oauth2-proxy
 1. **macOS/WSL2**: Deploy [3-oauth2-proxy.yaml](./3-oauth2-proxy.yaml) and the sample [3-dark.yaml](./3-dark.yaml) application
     ```bash
     # Create a Kubernetes Secret for oauth2-proxy `cookie-secret`
-    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(docker run --rm python:3.9.1-alpine python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')" && \
+    kubectl -n default create secret generic oauth2-proxy-cookie-secret --from-literal=oauth2_proxy_cookie_secret="$(docker run --rm python:3.9.1-alpine python -c 'import os,base64; print(base64.urlsafe_b64encode(os.urandom(16)).decode())')"
     # Deploy oauth2-proxy
-    kubectl apply -f 3-oauth2-proxy.yaml && \
+    kubectl apply -f 3-oauth2-proxy.yaml
     # Deploy sample app `dark`, served via HTTPS and protected with Google authentication
     kubectl apply -f 3-dark.yaml
     ```
@@ -685,7 +679,7 @@ The main difference is in the `args` of oauth2-proxy's Deployment, where the pro
 1. **macOS/WSL2**: Deploy [4-oauth2-proxy-oidc.yaml](./4-oauth2-proxy-oidc.yaml) and the sample [4-darker.yaml](./4-darker.yaml) application
     ```bash
     # Deploy oauth2-proxy
-    kubectl apply -f 4-oauth2-proxy-oidc.yaml && \
+    kubectl apply -f 4-oauth2-proxy-oidc.yaml
     # Deploy sample app `darker`, served via HTTPS and protected with Google authentication (OIDC)
     kubectl apply -f 4-darker.yaml
     ```
@@ -999,11 +993,11 @@ We'll use the built-in kubectl command [rollout restart deployment/deployment-na
 
 ## Troubleshooting
 
-1. ** Ingress**: Make sure you expose the cluster to the Host with `minikube tunnel` before trying to access the application with the browser
+1. **Ingress**: Make sure you expose the cluster to the Host with `minikube tunnel` before trying to access the application with the browser
     - ERR_CONNECTION_REFUSED
         ![troubleshooting-err-connection-refused](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/troubleshooting-err-connection-refused.png)
-1. ** Ingress**: Path-based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.html` is successful, but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. It's best to use Path-based ingresses for serving APIs, for example, `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) Host-based ingresses for serving static pages, just like I did in this project.
-1. ** Ingress**: version deprecation warning - ignore this warning; this is the latest version supported by the NGINX Ingress Controller
+1. **Ingress**: Path-based ingresses issues, For example `app.kubemaster.me/baby` would not work properly because the app serves static files in the root dir. The request to the HTML page `index.html` is successful, but subsequent requests to `app.kubemaster.me/baby/images/baby.png` will fail since NGINX's upstream can't serve static content. It's best to use Path-based ingresses for serving APIs, for example, `app.kubemaster.me/api/v1/get/something`. Use bare (`/`) Host-based ingresses for serving static pages, just like I did in this project.
+1. **Ingress**: version deprecation warning - ignore this warning; this is the latest version supported by the NGINX Ingress Controller
     ```bash
     Warning: networking.k8s.io/v1beta1 Ingress is deprecated in v1.19+, unavailable in v1.22+; use networking.k8s.io/v1 Ingress
     ```

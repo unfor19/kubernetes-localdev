@@ -447,7 +447,6 @@ You can quickly generate a CA certificate and key with [mkcert](https://github.c
     2. The result should be as below
 
     ![mkcert-certificate-installed](https://d33vo9sj4p3nyc.cloudfront.net/kubernetes-localdev/macos-mkcert-installed-cert.png)
-3. **macOS**: 
 
 </details>
 
